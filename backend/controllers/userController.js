@@ -21,22 +21,18 @@ export const addUser = async (req, res) => {
     // Extract password and other data from request body
     const { password, email, username, ...otherData } = req.body;
 
-    const isUsernameExist = await prisma.user.findUnique({
+    const isEmailOrUserExist = await prisma.user.findFirst({
       where: {
-        username: username,
+        OR: [{ email: email }, { username: username }],
       },
     });
-    if (isUsernameExist)
+    if (isEmailOrUserExist?.username === username)
       return res.status(200).send({
         success: false,
         message: "Username already exists!",
       });
-    const isEmailExist = await prisma.user.findUnique({
-      where: {
-        email: email,
-      },
-    });
-    if (isEmailExist)
+
+    if (isEmailOrUserExist?.email === email)
       return res.status(200).send({
         success: false,
         message: "Email already exists!",
@@ -57,8 +53,8 @@ export const addUser = async (req, res) => {
     // Send response (excluding password from the response)
     const { password: _, ...userData } = addUser;
     res.status(200).send({
-      success:true,
-      message:"User Registered Successfully!"
+      success: true,
+      message: "User Registered Successfully!",
     });
   } catch (error) {
     res.status(400).send({
@@ -73,8 +69,8 @@ export const addManyUsers = async (req, res) => {
       data: req.body,
     });
     res.status(200).send({
-      success:true,
-      message:'Registered Users Successfully'
+      success: true,
+      message: "Registered Users Successfully",
     });
   } catch (error) {
     res.status(400).send({
@@ -87,11 +83,56 @@ export const editUser = async (req, res) => {
   try {
     const { id } = req.params;
 
+    // Extract password and other data from request body
+    const { password, email, username, ...otherData } = req.body;
+
+    const isEmailOrUserExist = await prisma.user.findFirst({
+      where: {
+        AND: [
+          {
+            OR: [{ email: email }, { username: username }],
+          },
+          {
+            NOT: {
+              id: parseInt(id), // Exclude the current user from the check
+            },
+          },
+        ],
+      },
+    });
+    if (isEmailOrUserExist && isEmailOrUserExist.username === username)
+      return res.status(200).send({
+        success: false,
+        message: "Username already exists!",
+      });
+
+    if (isEmailOrUserExist && isEmailOrUserExist.email === email)
+      return res.status(200).send({
+        success: false,
+        message: "Email already exists!",
+      });
+
+    let updatedData = {
+      ...otherData,
+      username,
+      email,
+    };
+
+    if (password) {
+      // Hash password
+      const saltRounds = 10; // You can adjust the salt rounds based on your security requirement
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
+      updatedData.password = hashedPassword;
+    }
     const editUser = await prisma.user.update({
       where: { id: parseInt(id) },
-      data: req.body,
+      data: updatedData,
     });
-    res.status(200).send(editUser);
+
+    res.status(200).send({
+      success: true,
+      message: "User Updated Successfully!",
+    });
   } catch (error) {
     res.status(400).send({
       success: false,
@@ -140,7 +181,7 @@ export const loginUser = async (req, res) => {
         expiresIn,
       });
 
-      res.cookie('token', token, {
+      res.cookie("token", token, {
         httpOnly: true,
         secure: true,
         maxAge: expiresIn * 1000,
@@ -150,9 +191,9 @@ export const loginUser = async (req, res) => {
 
       res.status(200).send({
         success: true,
-        username:isUsernameExist,
+        username: isUsernameExist,
         expiresIn,
-        token
+        token,
       });
     } else {
       return res.status(200).send({

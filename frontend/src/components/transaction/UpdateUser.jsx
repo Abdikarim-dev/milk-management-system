@@ -3,7 +3,7 @@ import { Fragment, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
+import { CheckIcon, ChevronsUpDownIcon, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -12,7 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { registerUserApi } from "@/apicalls/users";
+import { updateUserApi } from "@/apicalls/users";
 
 const sex = [
   {
@@ -52,11 +52,14 @@ function classNames(...classes) {
 }
 
 function DialogModal(props) {
-  console.log(props?.user)
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [selected, setSelected] = useState(props?.user?.sex == 'male' ? sex[1]:sex[2] );
-  const [selectedUser, setSelectedUser] = useState(props?.user?.userType == 'admin'?user[1]:user[2]);
+  const [selected, setSelected] = useState(
+    props?.user?.sex == "male" ? sex[1] : sex[2]
+  );
+  const [selectedUser, setSelectedUser] = useState(
+    props?.user?.userType == "admin" ? user[1] : user[2]
+  );
 
   const [isCorrect, setIsCorrect] = useState({
     sex: false,
@@ -81,26 +84,24 @@ function DialogModal(props) {
     phone: z.string().nonempty({
       message: "Phone is a required field ,Write your Number here",
     }),
-    password: z
-      .string()
-      .min(6, {
-        message: "Password Must be at least 6 characters",
-      })
-      .max(20, {
-        message: "Password must be between 6 to 20 characters.",
-      }),
   });
 
   const {
     register,
     handleSubmit,
-
+    reset,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      fullname: props.user.fullname,
+      username: props.user.username,
+      email: props.user.email,
+      phone: props.user.phone,
+    },
   });
 
-  const registerUser = async (data) => {
+  const updateUser = async (data) => {
     const updatedIsCorrect = {
       sex: selected.name == "Select Sex" ? true : false,
       user: selectedUser.name === "Select User Type" ? true : false,
@@ -110,6 +111,7 @@ function DialogModal(props) {
 
     /// Preparing the data
     const user = {
+      id: props?.user?.id,
       fullname: data.fullname,
       username: data.username,
       email: data.email,
@@ -122,12 +124,22 @@ function DialogModal(props) {
 
     // Making the API CALL request and dealing with results
     try {
-      const response = await registerUserApi(user);
+      const response = await updateUserApi(user);
 
       if (response.success) {
         setTimeout(() => {
           toast.success(response.message);
         }, 500);
+        reset({
+          fullname: "", // You can reset to empty or to initial props if needed
+          username: "",
+          email: "",
+          phone: "",
+        });
+
+        // Resetting custom state for Listbox components
+        setSelected(sex[0]); // Assuming sex[0] is the initial 'Select Sex' state
+        setSelectedUser(user[0]); // Assuming user[0] is the initial 'Select User Type' state
       } else {
         setTimeout(() => {
           console.log(response);
@@ -145,17 +157,20 @@ function DialogModal(props) {
     <div>
       <Dialog>
         <DialogTrigger>
-          <span className="">
-            Update
-          </span>
+          <p className="flex gap-2">
+            <span className="text-green-600">
+              <Pencil />
+            </span>
+            <span className="">Update</span>
+          </p>
         </DialogTrigger>
         <DialogContent>
           <Form>
-            <h4 className="text-center text-3xl font-medium">Register User</h4>
-            <form onSubmit={handleSubmit(registerUser)} className="space-y-8">
+            <h4 className="text-center text-3xl font-medium">Update User</h4>
+            <form onSubmit={handleSubmit(updateUser)} className="space-y-8">
               <FormItem>
                 <FormControl>
-                  <Input {...register("fullname")} value={props.user.fullname} placeholder="Full Name" />
+                  <Input {...register("fullname")} placeholder="Full Name" />
                 </FormControl>
                 {errors.fullname && (
                   <p className="text-red-600">{errors.fullname.message}</p>
@@ -163,7 +178,7 @@ function DialogModal(props) {
               </FormItem>
               <FormItem>
                 <FormControl>
-                  <Input {...register("username")} value={props.user.username} placeholder="User Name" />
+                  <Input {...register("username")} placeholder="User Name" />
                 </FormControl>
                 {errors.username && (
                   <p className="text-red-600">{errors.username.message}</p>
@@ -172,7 +187,7 @@ function DialogModal(props) {
 
               <FormItem>
                 <FormControl>
-                  <Input {...register("email")} value={props.user.email} placeholder="Email" />
+                  <Input {...register("email")} placeholder="Email" />
                 </FormControl>
                 {errors.email && (
                   <p className="text-red-600">{errors.email.message}</p>
@@ -180,7 +195,7 @@ function DialogModal(props) {
               </FormItem>
               <FormItem>
                 <FormControl>
-                  <Input {...register("phone")} value={props.user.phone} placeholder="Phone" />
+                  <Input {...register("phone")} placeholder="Phone" />
                 </FormControl>
                 {errors.phone && (
                   <p className="text-red-600">{errors.phone.message}</p>
@@ -193,10 +208,7 @@ function DialogModal(props) {
                   {({ open }) => (
                     <>
                       <div className="relative mt-2">
-                        <Listbox.Button
-                          {...register("sex")}
-                          className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6"
-                        >
+                        <Listbox.Button className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6">
                           <span className="flex items-center">
                             <img
                               src={selected.avatar}
@@ -204,7 +216,7 @@ function DialogModal(props) {
                               className="h-5 w-5 flex-shrink-0 rounded-full"
                             />
                             <span className="ml-3 block truncate">
-                              {selected.name}
+                              {selected?.name}
                             </span>
                           </span>
                           <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
@@ -292,13 +304,10 @@ function DialogModal(props) {
                   {({ open }) => (
                     <>
                       <div className="relative mt-2">
-                        <Listbox.Button
-                          {...register("user")}
-                          className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6"
-                        >
+                        <Listbox.Button className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6">
                           <span className="flex items-center">
                             <span className="ml-3 block truncate">
-                              {selectedUser.name}
+                              {selectedUser?.name}
                             </span>
                           </span>
                           <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
@@ -379,7 +388,9 @@ function DialogModal(props) {
                   <p className="text-red-600">{"Please select user..."}</p>
                 )}
               </FormItem>
-              <Button type="submit">Submit</Button>
+              <Button type="submit">
+                {loading ? "Updating..." : "Update"}
+              </Button>
             </form>
           </Form>
         </DialogContent>

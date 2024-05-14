@@ -14,7 +14,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import UpdateUser from "./UpdateUser";
 import DeleteUser from "./DeleteUser";
-import ChangeUserPassword from "./ChangeUserPassword";
+import ChangeUserPassword from "./user/ChangeUserPassword";
 
 const sex = [
   {

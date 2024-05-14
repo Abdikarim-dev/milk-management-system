@@ -29,3 +29,19 @@ export const registerUserApi = async (payload)=>{
     return error.response.data;
   }
 }
+export const updateUserApi = async (payload)=>{
+  try{
+    const response = await axiosInistance.post(`/api/users/edit-user/${payload.id}`,payload);
+    return response.data;
+  }catch(error){
+    return error.response.data;
+  }
+}
+export const DeleteUserApi = async (payload)=>{
+  try{
+    const response = await axiosInistance.delete(`/api/users/remove-user/${payload.id}`,payload);
+    return response.data;
+  }catch(error){
+    return error.response.data;
+  }
+}

@@ -1,4 +1,4 @@
-import Banner from "@/components/dashboard/Banner"
+import Banner from "@/components/dashboard/Home"
 
 
 function DashboardPage() {

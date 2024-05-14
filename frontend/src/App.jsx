@@ -8,12 +8,12 @@ function App() {
   return (
 
     <>
-      <AuthProvider>
+      {/* <AuthProvider> */}
         <Routes>
           <Route path="/" element={<Login />}></Route>
         </Routes>
         <SidebarRoutes/>
-      </AuthProvider>
+      {/* </AuthProvider> */}
       {/* <Demo/> */}
     </>
   );

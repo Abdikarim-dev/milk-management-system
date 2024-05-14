@@ -22,12 +22,18 @@ const adminSidebar = [
   },
   {
     icon: "Boxes",
+    text: "Transactions",
+    route: "transaction",
+    active: "inactive",
+  },
+  {
+    icon: "Boxes",
     text: "User Profile",
     route: "profile",
     active: "inactive",
   },
 ];
-function Banner({ children }) {
+function Home({ children }) {
   
   return (
     <div className="flex">
@@ -46,4 +52,4 @@ function Banner({ children }) {
   );
 }
 
-export default Banner;
+export default Home;
