@@ -13,6 +13,9 @@ app.use(cookieParser())
 app.use(cors())
 app.use("/api/users", userRouter);
 app.use("/api/transaction", transactionRouter);
+app.use('*',(req,res)=>{
+  res.redirect("/")
+})
 
 
 app.listen(PORT, () => {

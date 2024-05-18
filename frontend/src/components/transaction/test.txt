@@ -1,0 +1,37 @@
+i've generated a token using this code when the user login to the system in the backend
+(
+const dataToBeSendToFrontend = {
+        _id: isUsernameExist.id,
+      };
+      const expiresIn = 7 * 24 * 60 * 60;
+      const token = jwt.sign(dataToBeSendToFrontend, JWT_SECRET, {
+        expiresIn,
+      });
+
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+        maxAge: expiresIn * 1000,
+      });
+)
+
+when the page is refreshed all the data is gone , 
+and this code is coming from the frontend especially redux 
+loginUser: (state, action) => {
+      console.log(action.payload);
+      const { username, expiresIn, token } = action.payload;
+
+      const expirationTime = new Date().getTime() + expiresIn * 1000;
+
+      // localStorage.setItem("user", JSON.stringify(username));
+      // localStorage.setItem("expirationTime", expirationTime.toString());
+
+      localStorage.setItem("token", token.toString());
+
+      state.user = username;
+      state.token = token;
+      state.tokenExpiration = expirationTime;
+    },
+
+
+so i have the token in the cookie and also in the localStorage so i want to request the users info using the token ( because the token have the user's id )

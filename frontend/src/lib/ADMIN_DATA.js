@@ -13,12 +13,10 @@ const getRandomColor = () => {
   const b = Math.floor(Math.random() * 256); // Random between 0-255
   return `rgb(${r},${g},${b})`;
 }
-console.log(typeof data?.message)
-console.log(data?.message)
 
 const usernames = data?.message?.map((element) => element?.username);
 const litres = data?.message?.map((element) => element?.litre);
-const backgroundColors = data.message.map(() => getRandomColor());
+const backgroundColors = data?.message?.map(() => getRandomColor());
 export const lineChartData = {
   labels: usernames,
   datasets: [

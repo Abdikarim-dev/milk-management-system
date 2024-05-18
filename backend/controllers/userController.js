@@ -1,6 +1,6 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcrypt";
+import bcrypt, { hash } from "bcrypt";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config/config.js";
 const prisma = new PrismaClient();
@@ -52,12 +52,12 @@ export const addUser = async (req, res) => {
 
     // Send response (excluding password from the response)
     const { password: _, ...userData } = addUser;
-    res.status(200).send({
+    return res.status(200).send({
       success: true,
       message: "User Registered Successfully!",
     });
   } catch (error) {
-    res.status(400).send({
+    return res.status(400).send({
       success: false,
       message: "An error occured : " + error.message,
     });
@@ -84,7 +84,7 @@ export const editUser = async (req, res) => {
     const { id } = req.params;
 
     // Extract password and other data from request body
-    const { password, email, username, ...otherData } = req.body;
+    const { password, email, username, userId, ...otherData } = req.body;
 
     const isEmailOrUserExist = await prisma.user.findFirst({
       where: {
@@ -146,7 +146,10 @@ export const removeUser = async (req, res) => {
     const removeUser = await prisma.user.delete({
       where: { id: parseInt(id) },
     });
-    res.status(200).send(removeUser);
+    res.status(200).send({
+      success: true,
+      message: "User Has been deleted successfully!",
+    });
   } catch (error) {
     res.status(400).send({
       success: false,
@@ -201,5 +204,104 @@ export const loginUser = async (req, res) => {
         message: "Incorrect Password, Please try again!",
       });
     }
+  }
+};
+
+export const getActiveUser = (req, res) => {};
+
+// export const getUserInfo = async (req, res) => {
+//   try {
+//     const user = await prisma.user.findUnique({
+//       where: {
+//         id: req.body.userId,
+//       },
+//     });
+//     user.password = "";
+//     if (user) {
+//       res.send({
+//         success: true,
+//         message: "User Info Fetched Successfully.",
+//         data: user,
+//       });
+//     } else {
+//       res.send({
+//         success: false,
+//         message: "User does not exists.",
+//         data: null,
+//       });
+//     }
+//   } catch (error) {
+//     res.status(400).send({
+//       success: false,
+//       data: error,
+//       message: error.message,
+//     });
+//   }
+// };
+
+export const changePassword = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const { userId, oldPassword, newPassword } = req.body;
+    const user = await prisma.user.findUnique({
+      where: {
+        id: parseInt(id),
+      },
+    });
+
+    const isPasswordMatched = await bcrypt.compare(oldPassword, user.password);
+
+    if (!isPasswordMatched) {
+      return res.status(400).send({
+        success: false,
+        message: "Please enter your old password correctly!",
+      });
+    }
+
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+    const updatePassword = await prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        password: hashedPassword,
+      },
+    });
+
+    res.status(200).send({
+      success: true,
+      message: "Password Has Been Changed Successfully",
+    });
+  } catch (error) {
+    res.status(400).send({
+      success: false,
+      data: error,
+      message: error.message,
+    });
+  }
+};
+
+export const getUserInfo = async (req, res) => {
+  try {
+    const userInfo = await prisma.user.findUnique({
+      where: {
+        id: req.body.userId,
+      },
+    });
+
+    res.status(200).send({
+      success: true,
+      data: userInfo,
+      message: "User Fetched Successfully!",
+    });
+  } catch (error) {
+    res.status(400).send({
+      success: false,
+      data: error,
+      message: error.message,
+    });
   }
 };

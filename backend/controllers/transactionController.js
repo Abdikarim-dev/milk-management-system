@@ -39,11 +39,13 @@ export const getTransactionsByUser = async (req, res) => {
         user: {
           id: parseInt(req.params.id),
         },
+
       },
       include: {
         user: true,
+        
       },
-      
+
     });
     res.status(200).send(allTransactionsByUser);
   } catch (error) {
@@ -73,7 +75,10 @@ export const addTransaction = async (req, res) => {
     const addTransaction = await prisma.transaction.create({
       data: req.body,
     });
-    res.status(200).send(addTransaction);
+    res.status(200).send({
+      success: true,
+      message: "Transaction Completed Successfully",
+    });
   } catch (error) {
     res.status(400).send({
       success: false,
@@ -102,7 +107,10 @@ export const editTransaction = async (req, res) => {
       where: { id: parseInt(id) },
       data: req.body,
     });
-    res.status(200).send(editTransaction);
+    res.status(200).send({
+      success: true,
+      message: "Transaction edited successfully...",
+    });
   } catch (error) {
     res.status(400).send({
       success: false,
@@ -128,12 +136,12 @@ export const removeTransaction = async (req, res) => {
 export async function getEachTransactionsUser(req, res) {
   try {
     const result = await prisma.transaction.groupBy({
-      by: ["userId"] , 
-      
-      where:{
-        user:{
-          userType:"user"
-        }
+      by: ["userId"],
+
+      where: {
+        user: {
+          userType: "user",
+        },
       },
       _sum: {
         litre: true,
@@ -150,20 +158,19 @@ export async function getEachTransactionsUser(req, res) {
     // })
 
     // Map the result to include username from allUsers array
-    const fullInfo = result.map(transaction => {
-      const user = allUsers.find(user => user.id === transaction.userId);
+    const fullInfo = result.map((transaction) => {
+      const user = allUsers.find((user) => user.id === transaction.userId);
       return {
         userId: transaction.userId,
         username: user ? user.username : "Unknown",
         fullname: user ? user.fullname : "Unknown",
         litre: transaction._sum.litre,
-        price: transaction._sum.price
+        price: transaction._sum.price,
       };
     });
     res.status(200).send({
       success: true,
       message: fullInfo,
-
     });
   } catch (error) {
     res.status(400).send({
@@ -173,3 +180,24 @@ export async function getEachTransactionsUser(req, res) {
     });
   }
 }
+
+export const getActiveUserTransactions = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    const transactions = await prisma.transaction.findMany({
+      include: {
+        user: true,
+      },
+      where: {
+        userId: parseInt(userId),
+      },
+    });
+    res.status(200).send(transactions);
+  } catch (error) {
+    res.status(400).send({
+      success: false,
+      message: "An error occured : " + error,
+    });
+  }
+};

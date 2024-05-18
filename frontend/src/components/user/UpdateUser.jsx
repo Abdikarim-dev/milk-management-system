@@ -111,7 +111,6 @@ function DialogModal(props) {
 
     /// Preparing the data
     const user = {
-      id: props?.user?.id,
       fullname: data.fullname,
       username: data.username,
       email: data.email,
@@ -124,7 +123,7 @@ function DialogModal(props) {
 
     // Making the API CALL request and dealing with results
     try {
-      const response = await updateUserApi(user);
+      const response = await updateUserApi(user,props?.user?.id);
 
       if (response.success) {
         setTimeout(() => {

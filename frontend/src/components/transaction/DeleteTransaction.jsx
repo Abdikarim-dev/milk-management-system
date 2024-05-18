@@ -19,7 +19,7 @@ function DeleteUser(props) {
 
     // Making the API CALL request and dealing with results
     try {
-      const response = await DeleteUserApi(props.user);
+      const response = await DeleteUserApi(props?.transaction);
 
       if (response.success) {
         setTimeout(() => {

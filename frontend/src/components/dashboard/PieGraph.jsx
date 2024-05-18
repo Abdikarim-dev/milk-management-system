@@ -7,7 +7,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { lineChartData } from "../../lib/FAKE_DATA";
+import { lineChartData } from "../../lib/ADMIN_DATA";
 
 ChartJS.register(
   CategoryScale,

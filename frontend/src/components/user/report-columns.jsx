@@ -11,10 +11,10 @@
 // import { MoreHorizontal } from "lucide-react";
 
 export const Reportcolumns = [
-  {
-    accessorKey: "id",
-    header: "ID",
-  },
+  // {
+  //   accessorKey: "id",
+  //   header: "id",
+  // },
   {
     accessorKey: "fullname",
     header: "Full Name",

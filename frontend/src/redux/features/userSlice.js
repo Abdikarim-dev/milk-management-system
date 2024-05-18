@@ -39,26 +39,32 @@ const userSlice = createSlice({
       // localStorage.setItem("expirationTime", expirationTime.toString());
 
       localStorage.setItem("token", token.toString());
-
+      localStorage.setItem("tokenExpiration", expirationTime);
       state.user = username;
       state.token = token;
       state.tokenExpiration = expirationTime;
     },
     logoutUser: (state) => {
-      // localStorage.removeItem("user");
+      localStorage.removeItem("token");
       // localStorage.removeItem("expirationTime");
 
       state.user = null;
       state.tokenExpiration = null;
+      state.token = null;
     },
-    checkSession: (state) => {
+    checkSession: (state, action) => {
+      const { tokenExpiration } = action.payload;
       const currentTime = new Date().getTime();
-      if (currentTime >= parseInt(state.tokenExpiration)) {
+      if (currentTime >= parseInt(tokenExpiration)) {
         userSlice.caseReducers.logoutUser(state);
       }
+    },
+    getUserDetails: (state, action) => {
+      state.user = action.payload;
     },
   },
 });
 
-export const { loginUser, logoutUser, checkSession } = userSlice.actions;
+export const { loginUser, logoutUser, getUserDetails, checkSession } =
+  userSlice.actions;
 export default userSlice.reducer;

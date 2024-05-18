@@ -1,44 +1,59 @@
+import { useSelector } from "react-redux";
 import Sidebar, { SidebarItem } from "../Sidebar";
-
 
 const adminSidebar = [
   {
     icon: "LayoutDashboard",
     text: "Dashboard",
     route: "home",
-    active: "inactive",
   },
   {
     icon: "UserCircle",
     text: "Users",
     route: "user",
-    active: "active",
   },
   {
     icon: "BarChart3",
     text: "Users Report",
     route: "report",
-    active: "inactive",
   },
   {
     icon: "Boxes",
     text: "Transactions",
     route: "transaction",
-    active: "inactive",
   },
   {
     icon: "Boxes",
     text: "User Profile",
     route: "profile",
-    active: "inactive",
+  },
+];
+const userSidebar = [
+  {
+    icon: "LayoutDashboard",
+    text: "Dashboard",
+    route: "home",
+  },
+  {
+    icon: "Boxes",
+    text: "Transactions",
+    route: "transaction",
+  },
+  {
+    icon: "Boxes",
+    text: "User Profile",
+    route: "profile",
   },
 ];
 function Home({ children }) {
-  
+  const { user } = useSelector((state) => state?.user);
+
+  const sidebarItems = user?.userType === "admin" ? adminSidebar : userSidebar;
+
   return (
-    <div className="flex">
+    <div className="flex ">
       <Sidebar>
-        {adminSidebar.map((sidebar) => (
+        {sidebarItems.map((sidebar) => (
           <SidebarItem
             key={sidebar.route}
             icon={sidebar.icon}
@@ -47,7 +62,7 @@ function Home({ children }) {
           ></SidebarItem>
         ))}
       </Sidebar>
-      {children}
+      <div className="w-full ml-[300px]">{children}</div>
     </div>
   );
 }

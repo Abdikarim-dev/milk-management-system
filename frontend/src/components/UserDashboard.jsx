@@ -1,5 +1,3 @@
-import LineGraph from "./PieGraph";
-import TopSales from "./TopSales";
 import Overview from "./Overview";
 import { useDispatch, useSelector } from "react-redux";
 import { useCallback, useEffect, useState } from "react";
@@ -12,7 +10,7 @@ import { logoutUser } from "@/redux/features/userSlice";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
-function Main() {
+function UserDashboard() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [data, setData] = useState([]);
@@ -121,4 +119,4 @@ function Main() {
   );
 }
 
-export default Main;
+export default UserDashboard;

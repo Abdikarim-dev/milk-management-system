@@ -18,8 +18,8 @@ function Sidebar({ children }) {
   const { user } = useSelector((state) => state.user);
 
   return (
-    <aside className="h-screen">
-      <nav className="h-full flex flex-col bg-white border-r shadow-sm">
+    <aside className="h-screen ">
+      <nav className="h-full w-[300px] fixed flex flex-col bg-white border-r shadow-sm">
         <div className="p-4 pb-2 flex justify-between items-center relative">
           {/* <button
             onClick={() => setExpanded((curr) => !curr)}
@@ -41,8 +41,8 @@ function Sidebar({ children }) {
             }
             alt=""
           />
-          <h4 className="text-xl font-semibold">{user.username}</h4>
-          <h4 className="font-extralight">{user.userType}</h4>
+          <h4 className="text-xl font-semibold">{user?.username}</h4>
+          <h4 className="font-extralight">{user?.userType}</h4>
         </div>
 
         <SidebarContext.Provider value={{ expanded }}>
@@ -61,8 +61,8 @@ function Sidebar({ children }) {
             }`}
           >
             <div className="leading-4">
-              <h4 className="font-semibold">{user.fullname}</h4>
-              <span className="text-xs text-gray-600">{user.email}</span>
+              <h4 className="font-semibold">{user?.fullname}</h4>
+              <span className="text-xs text-gray-600">{user?.email}</span>
             </div>
             <MoreVertical size={20} />
           </div>

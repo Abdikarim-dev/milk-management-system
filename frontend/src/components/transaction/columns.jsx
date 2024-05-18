@@ -5,49 +5,14 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 // Row Selection
 import { Checkbox } from "@/components/ui/checkbox";
-import UpdateUser from "./UpdateUser";
-import DeleteUser from "./DeleteUser";
-import ChangeUserPassword from "./user/ChangeUserPassword";
-
-const sex = [
-  {
-    id: 1,
-    name: "Select Sex",
-  },
-  {
-    id: 2,
-    name: "Male",
-    avatar:
-      "https://img.freepik.com/free-photo/3d-illustration-young-man-white-shirt-tie-with-glasses_1142-43199.jpg?t=st=1715407192~exp=1715410792~hmac=b20261ab39f9f7e802c0cf3a1c0a5824701b95a68cab3ebb759902f60590c4d8&w=740",
-  },
-  {
-    id: 3,
-    name: "Female",
-    avatar:
-      "https://img.freepik.com/free-psd/3d-render-avatar-character_23-2150611759.jpg?t=st=1715407545~exp=1715411145~hmac=d3644d1e8a07ae9ddddc2ce0198553f2cbc565e422f8a1f577f896cc1f5cc03d&w=740",
-  },
-];
-const user = [
-  {
-    id: 1,
-    name: "Select User Type",
-  },
-  {
-    id: 2,
-    name: "Admin",
-  },
-  {
-    id: 3,
-    name: "User",
-  },
-];
+import UpdateTransaction from "./UpdateTransaction";
+import DeleteTransaction from "./DeleteTransaction";
 
 export const columns = [
   {
@@ -77,19 +42,27 @@ export const columns = [
     header: "ID",
   },
   {
-    accessorKey: "fullname",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          FullName
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    accessorKey: "litre",
+    header: "Litres",
   },
+  {
+    accessorKey: "price",
+    header: "Price",
+  },
+  // {
+  //   accessorKey: "fullname",
+  //   header: ({ column }) => {
+  //     return (
+  //       <Button
+  //         variant="ghost"
+  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+  //       >
+  //         FullName
+  //         <ArrowUpDown className="ml-2 h-4 w-4" />
+  //       </Button>
+  //     );
+  //   },
+  // },
   {
     accessorKey: "username",
     header: ({ column }) => {
@@ -105,28 +78,6 @@ export const columns = [
     },
   },
   {
-    accessorKey: "email",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Email
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-  },
-  {
-    accessorKey: "phone",
-    header: "Phone",
-  },
-  {
-    accessorKey: "sex",
-    header: "Sex",
-  },
-  {
     accessorKey: "createdAt",
     header: "Created At",
     cell: ({ row }) => {
@@ -139,7 +90,7 @@ export const columns = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const user = row.original;
+      const transaction = row.original;
 
       return (
         <DropdownMenu>
@@ -152,17 +103,16 @@ export const columns = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            
 
             <div className="flex flex-col gap-2 p-2 text-sm font-semibold">
-            <p onClick={() => navigator.clipboard.writeText(user.id)}>
-              <ChangeUserPassword user={user} />
-            </p>
+              <p
+                onClick={() => navigator.clipboard.writeText(transaction.id)}
+              ></p>
               <p>
-                <UpdateUser user={user} />
+                <UpdateTransaction transaction={transaction} />
               </p>
               <p>
-                <DeleteUser user={user} />
+                <DeleteTransaction transaction={transaction} />
               </p>
             </div>
           </DropdownMenuContent>

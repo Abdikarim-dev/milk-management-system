@@ -79,14 +79,14 @@ function DataTable({ columns, data }) {
     <div className="rounded-md border">
       <div className="flex items-center px-4 py-4">
         {/* INPUT FOR FILTERING */}
-        <Input
+        {/* <Input
           placeholder="Filter By Full Name..."
           value={table.getColumn("fullname")?.getFilterValue() ?? ""}
           onChange={(event) =>
             table.getColumn("fullname")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
-        />
+        /> */}
         {/* DROP DOWN FOR COLUMN FILTERING */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
