@@ -1,7 +1,14 @@
-import { Milk, MoreVertical } from "lucide-react";
 import { useContext, createContext, useState, useMemo } from "react";
 import { NavLink } from "react-router-dom";
-import { BarChart3, Boxes, LayoutDashboard, UserCircle } from "lucide-react";
+import {
+  BarChart3,
+  Boxes,
+  LayoutDashboard,
+  UserCircle,
+  AudioWaveform,
+  Milk,
+  MoreVertical,
+} from "lucide-react";
 import { useSelector } from "react-redux";
 
 const SidebarContext = createContext();
@@ -12,6 +19,7 @@ const icons = {
   BarChart3: BarChart3,
   Boxes: Boxes,
   Milk: Milk,
+  AudioWaveform,
 };
 
 function Sidebar({ children }) {

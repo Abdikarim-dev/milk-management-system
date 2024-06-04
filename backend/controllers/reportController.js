@@ -7,6 +7,7 @@ import {
   endOfWeek,
   startOfMonth,
   endOfMonth,
+  add,
 } from "date-fns";
 
 const prisma = new PrismaClient();
@@ -18,20 +19,38 @@ const formatDate = (date) => {
 
 export const getDailyReport = async (req, res) => {
   try {
-
     const today = new Date();
     const start = startOfDay(today);
     const end = endOfDay(today);
+
     const transactions = await prisma.transaction.findMany({
       where: {
         createdAt: {
-          gte: start,
-          lte: end,
+          gte: add(start, { hours: 3 }),
+          lte: add(end, { hours: 3 }),
         },
       },
     });
 
-    res.status(200).json(transactions);
+    const result = await prisma.transaction.groupBy({
+      by: ["userId"],
+
+      where: {
+        user: {
+          userType: "user",
+        },
+        createdAt: {
+          gte: add(start, { hours: 3 }),
+          lte: add(end, { hours: 3 }),
+        },
+      },
+      _sum: {
+        litre: true,
+        price: true,
+      },
+    });
+
+    res.status(200).json({ message: "success", transactions, result });
   } catch (error) {
     res.status(500).json({ message: "Error fetching daily report", error });
   }
@@ -46,13 +65,31 @@ export const getWeeklyReport = async (req, res) => {
     const transactions = await prisma.transaction.findMany({
       where: {
         createdAt: {
-          gte: start,
-          lte: end,
+          gte: add(start, { hours: 3 }),
+          lte: add(end, { hours: 3 }),
         },
       },
     });
 
-    res.status(200).json(transactions);
+    const result = await prisma.transaction.groupBy({
+      by: ["userId"],
+
+      where: {
+        user: {
+          userType: "user",
+        },
+        createdAt: {
+          gte: add(start, { hours: 3 }),
+          lte: add(end, { hours: 3 }),
+        },
+      },
+      _sum: {
+        litre: true,
+        price: true,
+      },
+    });
+
+    res.status(200).json({ message: "success", transactions, result });
   } catch (error) {
     res.status(500).json({ message: "Error fetching weekly report", error });
   }
@@ -67,13 +104,31 @@ export const getMonthlyReport = async (req, res) => {
     const transactions = await prisma.transaction.findMany({
       where: {
         createdAt: {
-          gte: start,
-          lte: end,
+          gte: add(start, { hours: 3 }),
+          lte: add(end, { hours: 3 }),
         },
       },
     });
 
-    res.status(200).json(transactions);
+    const result = await prisma.transaction.groupBy({
+      by: ["userId"],
+
+      where: {
+        user: {
+          userType: "user",
+        },
+        createdAt: {
+          gte: add(start, { hours: 3 }),
+          lte: add(end, { hours: 3 }),
+        },
+      },
+      _sum: {
+        litre: true,
+        price: true,
+      },
+    });
+
+    res.status(200).json({ message: "success", transactions, result });
   } catch (error) {
     res.status(500).json({ message: "Error fetching monthly report", error });
   }
@@ -84,21 +139,35 @@ export const getCustomReport = async (req, res) => {
     const { startDate, endDate } = req.body;
     const start = new Date(startDate);
     const end = new Date(endDate);
-    const newStartDate = formatDate(start)
-    const newEndDate = formatDate(end)
-    console.log(newStartDate)
-    console.log(newEndDate)
 
     const transactions = await prisma.transaction.findMany({
       where: {
         createdAt: {
-          gte: newStartDate,
-          lte: newEndDate,
+          gte: start,
+          lte: end,
         },
       },
     });
 
-    res.status(200).json(transactions);
+    const result = await prisma.transaction.groupBy({
+      by: ["userId"],
+
+      where: {
+        user: {
+          userType: "user",
+        },
+        createdAt: {
+          gte: start,
+          lte: end,
+        },
+      },
+      _sum: {
+        litre: true,
+        price: true,
+      },
+    });
+
+    res.status(200).json({ message: "success", transactions, result });
   } catch (error) {
     res.status(500).json({ message: "Error fetching custom report", error });
   }

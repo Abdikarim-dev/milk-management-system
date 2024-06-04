@@ -28,6 +28,11 @@ const adminSidebar = [
     route: "transaction",
   },
   {
+    icon: "AudioWaveform",
+    text: "Reports",
+    route: "reports",
+  },
+  {
     icon: "Boxes",
     text: "User Profile",
     route: "profile",
@@ -55,6 +60,7 @@ const userSidebar = [
     route: "profile",
   },
 ];
+
 function Home({ children }) {
   const { user } = useSelector((state) => state?.user);
 

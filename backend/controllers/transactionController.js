@@ -181,12 +181,6 @@ export async function getEachTransactionsUser(req, res) {
     });
     const allUsers = await prisma.user.findMany();
 
-    // const fullInfo = [];
-    // const mapUsers = result.map((user)=>{
-    //   const temp = allUsers.find(index => true && index.id ==user.userId)
-    //   return temp
-
-    // })
 
     // Map the result to include username from allUsers array
     const fullInfo = result.map((transaction) => {

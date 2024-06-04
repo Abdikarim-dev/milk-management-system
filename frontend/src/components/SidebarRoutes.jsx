@@ -56,6 +56,14 @@ function SidebarRoutes() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path={"/reports"}
+          element={
+            <ProtectedRoute>
+              <UsersReport />
+            </ProtectedRoute>
+          }
+        />
 
         <Route
           path={"/profile"}

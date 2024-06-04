@@ -162,6 +162,7 @@ function DataTable({ columns, data }) {
                 </TableCell>
               </TableRow>
             )}
+            
           </TableBody>
         </Table>
       </div>
