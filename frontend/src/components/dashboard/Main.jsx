@@ -4,7 +4,10 @@ import Overview from "./Overview";
 import { useDispatch, useSelector } from "react-redux";
 import { useCallback, useEffect, useState } from "react";
 
-import { fetchUsersSales } from "@/apicalls/transactions";
+import {
+  fetchUsersSales,
+  getSpecificTransactions,
+} from "@/apicalls/transactions";
 import BarGraph from "./BarGraph";
 import PieGraph from "./PieGraph";
 import { LogOut } from "lucide-react";
@@ -13,9 +16,11 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 function Main() {
+  const { user } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [data, setData] = useState([]);
+  const [users, setUsers] = useState([]);
   const [formData, setFormData] = useState({
     litre: 0,
     price: 0,
@@ -37,11 +42,19 @@ function Main() {
   }, [data]); // Dependency on 'data'
 
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await fetchUsersSales();
-      setData(data.message);
-    };
-    fetchData();
+    if (user?.userType === "admin") {
+      const fetchData = async () => {
+        const data = await fetchUsersSales();
+        setData(data.message);
+      };
+      fetchData();
+    } else {
+      const fetchData = async () => {
+        const response = await getSpecificTransactions();
+        setUsers(response.data[0]);
+      };
+      fetchData();
+    }
   }, []);
 
   // Separate useEffect to handle updates to 'data'
@@ -51,26 +64,26 @@ function Main() {
       dataFromApi();
     }
   }, [data]); // Effect runs when 'data' changes
-  const { user } = useSelector((state) => state.user);
+
   const review = [
     {
       id: 1,
-      name: "No of Users",
-      price: data.length,
+      name: user?.userType === "admin" ? "No of Users" : "No of Transactions",
+      price: user?.userType === "admin" ? data.length : users?._count?.userId,
       review: "+20.1% from last month",
       icon: "Users",
     },
     {
       id: 2,
-      name: "Sales",
-      price: formData.litre,
+      name: "No of Litres",
+      price: user?.userType === "admin" ?formData.litre:Number(users?._sum?.litre).toLocaleString(),
       review: "+180.1% from last month",
       icon: "LineChart",
     },
     {
       id: 3,
       name: "Total Revenue",
-      price: formData.price,
+      price: user?.userType === "admin" ?formData.price:users?._sum?.price.toLocaleString() + ' SOS',
       review: "+19% from last month",
       icon: "HandCoins",
     },
@@ -113,7 +126,7 @@ function Main() {
       <section className="pt-[1rem]">
         <div className=" flex flex-col lg:flex-row justify-between items-center gap-3">
           <BarGraph />
-          <PieGraph />
+          {user?.userType === "admin" ? <PieGraph /> : <TopSales id={user?.id} />}
           {/* <TopSales /> */}
         </div>
       </section>

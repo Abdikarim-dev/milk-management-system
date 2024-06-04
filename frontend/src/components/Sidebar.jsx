@@ -1,4 +1,4 @@
-import { MoreVertical } from "lucide-react";
+import { Milk, MoreVertical } from "lucide-react";
 import { useContext, createContext, useState, useMemo } from "react";
 import { NavLink } from "react-router-dom";
 import { BarChart3, Boxes, LayoutDashboard, UserCircle } from "lucide-react";
@@ -11,6 +11,7 @@ const icons = {
   UserCircle: UserCircle,
   BarChart3: BarChart3,
   Boxes: Boxes,
+  Milk: Milk,
 };
 
 function Sidebar({ children }) {
@@ -36,9 +37,7 @@ function Sidebar({ children }) {
         >
           <img
             className="rounded-full w-[60px] h-[60px]"
-            src={
-              "https://i.pinimg.com/564x/be/ae/6b/beae6b7e4f6e29e2ceb8cf7e58122a8c.jpg"
-            }
+            src={user?.image}
             alt=""
           />
           <h4 className="text-xl font-semibold">{user?.username}</h4>

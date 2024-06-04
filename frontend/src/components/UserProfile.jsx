@@ -64,6 +64,7 @@ function UserProfile() {
   const [selectedUser, setSelectedUser] = useState(
     user?.userType == "admin" ? role[1] : role[2]
   );
+  const [image, setImage] = useState(null);
 
   const [isCorrect, setIsCorrect] = useState({
     sex: false,
@@ -97,12 +98,21 @@ function UserProfile() {
   } = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      fullname: user.fullname,
-      username: user.username,
-      email: user.email,
-      phone: user.phone,
+      fullname: user?.fullname,
+      username: user?.username,
+      email: user?.email,
+      phone: user?.phone,
     },
   });
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      setImage(file);
+    } else {
+      toast.error("Please select a valid image file");
+    }
+  };
 
   const updateUser = async (data) => {
     const updatedIsCorrect = {
@@ -113,25 +123,26 @@ function UserProfile() {
     setIsCorrect(updatedIsCorrect);
 
     /// Preparing the data
-    const updatedUser = {
-      fullname: data.fullname,
-      username: data.username,
-      email: data.email,
-      phone: data.phone,
-      sex: selected.name.toLowerCase(),
-      userType: user?.userType,
-    };
+    const formData = new FormData();
+
+    formData.append("fullname", data.fullname);
+    formData.append("username", data.username);
+    formData.append("email", data.email);
+    formData.append("phone", data.phone);
+    formData.append("password", data.password);
+    formData.append("sex", selected.name.toLowerCase());
+    formData.append("userType", selectedUser.name.toLowerCase());
+    if (image) formData.append("image", image);
     setLoading(true);
 
     // Making the API CALL request and dealing with results
     try {
-      const response = await updateUserApi(updatedUser,user?.id);
+      const response = await updateUserApi(formData, user?.id);
 
       if (response.success) {
         setTimeout(() => {
           toast.success(response.message);
         }, 500);
-        
       } else {
         setTimeout(() => {
           console.log(response);
@@ -154,6 +165,35 @@ function UserProfile() {
             Personal Information
           </h4>
           <form onSubmit={handleSubmit(updateUser)} className="space-y-8">
+            <FormItem>
+              <FormLabel className="flex items-center mb-2 ml-1">
+                <Asterisk color="#C40C0C" />
+                <span>Profile Picture</span>
+              </FormLabel>
+              <FormControl>
+                <Input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                />
+              </FormControl>
+              {errors.image && (
+                <p className="text-red-600">{errors.image.message}</p>
+              )}
+            </FormItem>
+            {image && (
+              <div className="flex justify-center mb-4">
+                <img
+                  src={
+                    typeof image === "string"
+                      ? image
+                      : URL.createObjectURL(image)
+                  }
+                  alt="Profile Preview"
+                  className="h-32 w-32 rounded-full object-cover"
+                />
+              </div>
+            )}
             <FormItem>
               <FormLabel className="flex items-center mb-2 ml-1">
                 <Asterisk color="#C40C0C"></Asterisk>
@@ -311,7 +351,7 @@ function UserProfile() {
                 <span>USER TYPE</span>
               </FormLabel>
               <FormControl>
-              <Input value={user?.userType} disabled />
+                <Input value={user?.userType} disabled />
               </FormControl>
             </FormItem>
             <div className="text-right">

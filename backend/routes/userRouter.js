@@ -10,17 +10,23 @@ import {
   removeUser,
 } from "../controllers/userController.js";
 import { authenticate } from "../middleware/authMiddleware.js";
+import upload from "../middleware/multer.js";
 
 const userRouter = express.Router();
 
 userRouter.post("/login-user", loginUser);
-userRouter.get("/get-users",authenticate, getUsers);
-userRouter.get("/get-user-info",authenticate, getUserInfo);
+userRouter.get("/get-users", authenticate, getUsers);
+userRouter.get("/get-user-info", authenticate, getUserInfo);
 // userRouter.get("/get-user-info",authenticate, getUserInfo);
-userRouter.post("/add-user",authenticate, addUser);
-userRouter.post("/add-users",authenticate, addManyUsers);
-userRouter.post("/edit-user/:id",authenticate, editUser);
-userRouter.post("/change-password/:id",authenticate, changePassword);
-userRouter.delete("/remove-user/:id",authenticate, removeUser);
+userRouter.post("/add-user", authenticate, upload.single('image'), addUser);
+userRouter.post("/add-users", authenticate, addManyUsers);
+userRouter.post(
+  "/edit-user/:id",
+  authenticate,
+  upload.single('image'),
+  editUser
+);
+userRouter.post("/change-password/:id", authenticate, changePassword);
+userRouter.delete("/remove-user/:id", authenticate, removeUser);
 
 export default userRouter;

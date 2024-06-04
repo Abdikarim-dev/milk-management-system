@@ -39,15 +39,16 @@ export const getTransactionsByUser = async (req, res) => {
         user: {
           id: parseInt(req.params.id),
         },
-
       },
       include: {
         user: true,
-        
       },
-
     });
-    res.status(200).send(allTransactionsByUser);
+    res.status(200).send({
+      success: true,
+      message: "All User Transactions fetched successfully",
+      data: allTransactionsByUser,
+    });
   } catch (error) {
     res.status(400).send({
       success: false,
@@ -72,15 +73,45 @@ export const getTransactions = async (req, res) => {
 };
 export const addTransaction = async (req, res) => {
   try {
-    const addTransaction = await prisma.transaction.create({
-      data: req.body,
+    const { userId, litre, price, milkTankId } = req.body;
+    const milkTank = await prisma.milkTank.findUnique({
+      where: {
+        id: parseInt(milkTankId),
+      },
     });
+
+    if (!milkTank)
+      return res.status(400).send({
+        success: false,
+        message: "Milk Tank Is Empty!",
+      });
+
+    if (milkTank.quantity < litre)
+      return res.status(400).send({
+        success: false,
+        message: "Not enough milk in the tank!",
+      });
+    const transaction = await prisma.transaction.create({
+      data: {
+        litre:parseFloat(litre),
+        price:parseFloat(price),
+        // user: { connect: { id: parseInt(userId) } },
+        // milkTank: { connect: { id: parseInt(milkTankId) } },
+        userId,
+        milkTankId
+      },
+    });
+
+    await prisma.milkTank.update({
+      where:{id:milkTankId},
+      data:{quantity:milkTank.quantity - litre}
+    })
     res.status(200).send({
       success: true,
       message: "Transaction Completed Successfully",
     });
   } catch (error) {
-    res.status(400).send({
+    res.status(401).send({
       success: false,
       message: "An error occured : " + error.message,
     });
@@ -183,17 +214,28 @@ export async function getEachTransactionsUser(req, res) {
 
 export const getActiveUserTransactions = async (req, res) => {
   try {
-    const userId = req.params.id;
+    const transactions = await prisma.transaction.groupBy({
+      by: ["userId"],
 
-    const transactions = await prisma.transaction.findMany({
-      include: {
-        user: true,
-      },
       where: {
-        userId: parseInt(userId),
+        user: {
+          userType: "user",
+          id: req.body.userId,
+        },
+      },
+      _sum: {
+        litre: true,
+        price: true,
+      },
+      _count: {
+        userId: true,
       },
     });
-    res.status(200).send(transactions);
+    res.status(200).send({
+      success: true,
+      message: "User's transaction fetched successfully!",
+      data: transactions,
+    });
   } catch (error) {
     res.status(400).send({
       success: false,
@@ -201,3 +243,34 @@ export const getActiveUserTransactions = async (req, res) => {
     });
   }
 };
+// export const getActiveUserTransactions = async (req, res) => {
+//   try {
+
+//     const transactions = await prisma.transaction.groupBy({
+//       by: ["userId"],
+
+//       where: {
+//         user: {
+//           userType: "user",
+//         },
+//       },
+//       _sum: {
+//         litre: true,
+//         price: true,
+//       },
+//       _count:{
+//         userId:true
+//       }
+//     });
+//     res.status(200).send({
+//       success:true,
+//       message:"User's transaction fetched successfully!",
+//       data:transactions
+//     });
+//   } catch (error) {
+//     res.status(400).send({
+//       success: false,
+//       message: "An error occured : " + error,
+//     });
+//   }
+// };

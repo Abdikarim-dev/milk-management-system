@@ -2,7 +2,6 @@ import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config/config.js";
 
 export const authenticate = async (req, res, next) => {
-  console.log("Authorization Header:", req.headers.cookie);
   if (!req.headers.cookie) {
     return res.status(401).send({ message: "No authorization token provided" });
   }
@@ -11,7 +10,6 @@ export const authenticate = async (req, res, next) => {
   try {
     jwt.verify(token, JWT_SECRET, (err, decoded) => {
       if (err) {
-        console.log("Token verification failed:", err);
         return res.status(403).send({ message: "Invalid or Expired Token" });
       }
       req.user = decoded;

@@ -1,10 +1,12 @@
-import { fetchUsersSales } from "@/apicalls/transactions";
+import { getSpecificTransactions } from "@/apicalls/transactions";
 
-const fetchData = async () => {
-  const response = await fetchUsersSales();
-  return response;
-};
-const data = await fetchData();
+// const fetchData = async () => {
+//   const response = await getSpecificTransactions();
+//   return response && response?.data[0];
+// };
+// const data = await fetchData();
+
+const data = [];
 
 // Function to generate a random RGB color
 const getRandomColor = () => {
@@ -12,18 +14,19 @@ const getRandomColor = () => {
   const g = Math.floor(Math.random() * 256); // Random between 0-255
   const b = Math.floor(Math.random() * 256); // Random between 0-255
   return `rgb(${r},${g},${b})`;
-}
+};
 
-const litresOfMilk = data?.message?.map((element) => element?.username);
-const prices = data?.message?.map((element) => element?.litre);
-const backgroundColors = data?.message?.map(() => getRandomColor());
-export const lineChartData = {
-  labels: litresOfMilk,
+// const litresOfMilk = data?._sum.litre;
+// const prices = data?._sum.price;
+// const count = data?._count.userId*1000;
+const backgroundColors = getRandomColor();
+export const userChartData = {
+  labels: ["NO Of LITRES", "No Of Transaction"],
   datasets: [
     {
       label: "Overview",
-      data: prices,
-      backgroundColor: backgroundColors,
+      data: ["litresOfMilk", "count"],
+      backgroundColor: backgroundColors,backgroundColors,
     },
   ],
 };

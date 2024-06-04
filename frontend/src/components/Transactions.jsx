@@ -15,7 +15,7 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { RegisterTransaction, getSpecificTransactions } from "@/apicalls/transactions";
+import { RegisterTransaction, getSpecificTransactions, getTransactionsByUser } from "@/apicalls/transactions";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -197,7 +197,7 @@ function Transactions() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await getSpecificTransactions(user?.id);
+      const data = await getTransactionsByUser(user?.id);
 
       // Function to reformat the array excluding specific properties
       const reformattedData = data?.map(

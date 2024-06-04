@@ -14,11 +14,9 @@ function ProtectedRoute({ children }) {
     try {
       // const toastId = toast.loading("Getting Logged In User Info...");
       const response = await getUserInfo();
-      console.log(response)
       if (response.success) {
         // dispatch(checkSession(localStorage.getItem("tokenExpiration")));
-        console.log(response.data)
-        dispatch(getUserDetails(response.data))
+        dispatch(getUserDetails(response.data));
       } else {
         toast.error(response.message);
       }
@@ -37,12 +35,12 @@ function ProtectedRoute({ children }) {
     if (!localStorage.getItem("token")) {
       navigate("/login");
     } else {
-      // getData();
+      getData();
     }
   }, [navigate]);
-  if (!localStorage.getItem("token")) {
-    return null;
-  }
+  // if (!localStorage.getItem("token")) {
+  //   return null;
+  // }
 
   return <div>{children}</div>;
 }

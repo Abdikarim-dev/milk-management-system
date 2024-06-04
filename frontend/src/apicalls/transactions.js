@@ -21,6 +21,16 @@ export const getTransactions = async () => {
     return error.response.data;
   }
 };
+export const getTransactionsByUser = async (payload) => {
+  try {
+    const response = await axiosInistance.get(
+      `/api/transaction/get-transactions-by-each-username/${payload}`
+    );
+    return response.data;
+  } catch (error) {
+    return error.response.data;
+  }
+};
 export const getSpecificTransactions = async (payload) => {
   try {
     const response = await axiosInistance.get(

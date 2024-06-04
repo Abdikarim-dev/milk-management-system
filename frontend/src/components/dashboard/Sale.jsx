@@ -1,17 +1,28 @@
-function Sale({ img, name, email, price }) {
+function Sale({ amount_info, price_info, amount, price, transactionInfo }) {
+  function findTransactionNameByPrice(inputPrice) {
+    // Find the transaction that matches the price
+    const transaction = transactionInfo.find(
+      (transaction) => transaction.litre.toString() === inputPrice
+    );
+
+    console.log(transactionInfo)
+    // Return the transaction name if found, otherwise return a message indicating no match was found
+    return transaction ? transaction.name : "No match found";
+  }
   return (
     <div className="flex justify-between items-center gap-5">
-      <div className="flex gap-5 ">
-        <div>
-          <img src={img} className="rounded-full w-[40px] h-[40px]" alt="" />
-        </div>
-        <div>
-          <p className="text-md font-semibold">{name}</p>
-          <p className="text-[#82828A]">{email}</p>
-        </div>
+      <div>
+        <p className="text-md font-semibold">{amount_info}</p>
+        <p className="text-[#82828A]">{price_info}</p>
       </div>
-
-      <div className="text-xl font-semibold">{price}</div>
+      <div>
+        <p className="text-md font-semibold">
+          {findTransactionNameByPrice(amount)}
+        </p>
+        <p className="text-[#82828A]">{price.toLocaleString()} SOS</p>
+      </div>
+      {/* 
+      <div className="text-xl font-semibold">{price}</div> */}
     </div>
   );
 }

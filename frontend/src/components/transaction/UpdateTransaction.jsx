@@ -303,7 +303,7 @@ function DialogModal(props) {
 
               <FormItem>
                 <FormControl>
-                  <Input value={selectedInfo.price} disabled placeholder="" />
+                  <Input value={selectedInfo?.price} disabled placeholder="" />
                 </FormControl>
                 {/* {errors.email && (
                     <p className="text-red-600">{errors.email.message}</p>
@@ -319,8 +319,8 @@ function DialogModal(props) {
               </FormItem>
               <Button
                 disabled={
-                  selectedInfo.litre === "Select Amount of Litre" ||
-                  selectedInfo.price === 0
+                  selectedInfo?.litre === "Select Amount of Litre" ||
+                  selectedInfo?.price === 0
                 }
                 type="submit"
               >

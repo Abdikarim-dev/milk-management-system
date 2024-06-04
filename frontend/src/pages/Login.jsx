@@ -1,4 +1,4 @@
-import { useAuth } from "@/AuthProvider";
+// import { useAuth } from "@/AuthProvider";
 import { loginUserApi } from "@/apicalls/users";
 import { Form, FormControl, FormItem, FormLabel } from "@/components/ui/form";
 
@@ -29,7 +29,6 @@ function Login() {
     if (userInfo) navigate("/home");
   }, []);
 
-  // const {login} = useAuth();
   const handleInputChange = (event) => {
     setFormData({
       ...formData,
@@ -43,12 +42,6 @@ function Login() {
     setLoading(true);
 
     try {
-      // const { data } = await axios.post(
-      //   "http://localhost:3001/users/login-user",
-      //   formData
-      // );
-      // console.log(formData);
-      // setLoading(false);
       const data = await loginUserApi(formData);
       
       const user = {

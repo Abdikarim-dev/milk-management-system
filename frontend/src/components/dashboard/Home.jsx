@@ -8,6 +8,11 @@ const adminSidebar = [
     route: "home",
   },
   {
+    icon: "Milk",
+    text: "Tank",
+    route: "tank",
+  },
+  {
     icon: "UserCircle",
     text: "Users",
     route: "user",
@@ -33,6 +38,11 @@ const userSidebar = [
     icon: "LayoutDashboard",
     text: "Dashboard",
     route: "home",
+  },
+  {
+    icon: "Milk",
+    text: "Tank",
+    route: "tank",
   },
   {
     icon: "Boxes",

@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt, { hash } from "bcrypt";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config/config.js";
+import cloudinary from "../config/cloudinary.js";
 const prisma = new PrismaClient();
 
 export const getUsers = async (req, res) => {
@@ -19,7 +20,7 @@ export const getUsers = async (req, res) => {
 export const addUser = async (req, res) => {
   try {
     // Extract password and other data from request body
-    const { password, email, username, ...otherData } = req.body;
+    const { userId, password, email, image, username, ...otherData } = req.body;
 
     const isEmailOrUserExist = await prisma.user.findFirst({
       where: {
@@ -38,6 +39,20 @@ export const addUser = async (req, res) => {
         message: "Email already exists!",
       });
 
+    let result;
+
+    if (req.file) {
+      let encodedImage = `data:image/jpeg;base64,${req.file.buffer.toString(
+        "base64"
+      )}`;
+
+      result = await cloudinary.uploader.upload(encodedImage, {
+        resource_type: "image",
+        transformation: [{ width: 500, height: 500, crop: "limit" }],
+        encoding: "base64",
+      });
+    }
+
     // Hash password
     const saltRounds = 10; // You can adjust the salt rounds based on your security requirement
     const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -47,6 +62,7 @@ export const addUser = async (req, res) => {
         username,
         email,
         password: hashedPassword, // Use the hashed password instead of the plain one
+        image: result?.url,
       },
     });
 
@@ -63,6 +79,7 @@ export const addUser = async (req, res) => {
     });
   }
 };
+
 export const addManyUsers = async (req, res) => {
   try {
     const addedUsers = await prisma.user.createMany({
@@ -84,7 +101,7 @@ export const editUser = async (req, res) => {
     const { id } = req.params;
 
     // Extract password and other data from request body
-    const { password, email, username, userId, ...otherData } = req.body;
+    const { password, email, username, userId, image, ...otherData } = req.body;
 
     const isEmailOrUserExist = await prisma.user.findFirst({
       where: {
@@ -112,10 +129,25 @@ export const editUser = async (req, res) => {
         message: "Email already exists!",
       });
 
+    let result;
+
+    if (req.file) {
+      let encodedImage = `data:image/jpeg;base64,${req.file.buffer.toString(
+        "base64"
+      )}`;
+
+      result = await cloudinary.uploader.upload(encodedImage, {
+        resource_type: "image",
+        transformation: [{ width: 500, height: 500, crop: "limit" }],
+        encoding: "base64",
+      });
+    }
+
     let updatedData = {
       ...otherData,
       username,
       email,
+      image: result?.url,
     };
 
     if (password) {
@@ -137,6 +169,7 @@ export const editUser = async (req, res) => {
     res.status(400).send({
       success: false,
       message: "An error occured : " + error,
+      data: error.message,
     });
   }
 };
@@ -158,52 +191,59 @@ export const removeUser = async (req, res) => {
   }
 };
 export const loginUser = async (req, res) => {
-  const { username, password } = req.body;
-  const isUsernameExist = await prisma.user.findUnique({
-    where: {
-      username: username,
-    },
-  });
-  if (!isUsernameExist)
-    return res.status(200).send({
-      success: false,
-      message: "Username is not exist!, please create an account!",
+  try {
+    const { username, password } = req.body;
+    const isUsernameExist = await prisma.user.findUnique({
+      where: {
+        username: username,
+      },
     });
-  else {
-    const passwordMatched = await bcrypt.compare(
-      password,
-      isUsernameExist.password
-    );
-
-    if (passwordMatched) {
-      const dataToBeSendToFrontend = {
-        _id: isUsernameExist.id,
-      };
-      const expiresIn = 7 * 24 * 60 * 60;
-      const token = jwt.sign(dataToBeSendToFrontend, JWT_SECRET, {
-        expiresIn,
-      });
-
-      res.cookie("token", token, {
-        httpOnly: true,
-        secure: true,
-        maxAge: expiresIn * 1000,
-      });
-
-      isUsernameExist.password = undefined;
-
-      res.status(200).send({
-        success: true,
-        username: isUsernameExist,
-        expiresIn,
-        token,
-      });
-    } else {
+    if (!isUsernameExist)
       return res.status(200).send({
         success: false,
-        message: "Incorrect Password, Please try again!",
+        message: "Username is not exist!, please create an account!",
       });
+    else {
+      const passwordMatched = await bcrypt.compare(
+        password,
+        isUsernameExist.password
+      );
+
+      if (passwordMatched) {
+        const dataToBeSendToFrontend = {
+          _id: isUsernameExist.id,
+        };
+        const expiresIn = 7 * 24 * 60 * 60;
+        const token = jwt.sign(dataToBeSendToFrontend, JWT_SECRET, {
+          expiresIn,
+        });
+
+        res.cookie("token", token, {
+          httpOnly: true,
+          secure: true,
+          maxAge: expiresIn * 1000,
+        });
+
+        isUsernameExist.password = undefined;
+
+        res.status(200).send({
+          success: true,
+          username: isUsernameExist,
+          expiresIn,
+          token,
+        });
+      } else {
+        return res.status(200).send({
+          success: false,
+          message: "Incorrect Password, Please try again!",
+        });
+      }
     }
+  } catch (error) {
+    res.status(400).send({
+      success: false,
+      message: "An error occured : " + error,
+    });
   }
 };
 

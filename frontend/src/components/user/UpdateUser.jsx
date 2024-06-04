@@ -3,9 +3,9 @@ import { Fragment, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { CheckIcon, ChevronsUpDownIcon, Pencil } from "lucide-react";
+import { Asterisk, CheckIcon, ChevronsUpDownIcon, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormItem } from "@/components/ui/form";
+import { Form, FormControl, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -53,6 +53,7 @@ function classNames(...classes) {
 
 function DialogModal(props) {
   const navigate = useNavigate();
+  const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState(
     props?.user?.sex == "male" ? sex[1] : sex[2]
@@ -101,6 +102,15 @@ function DialogModal(props) {
     },
   });
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      setImage(file);
+    } else {
+      toast.error("Please select a valid image file");
+    }
+  };
+
   const updateUser = async (data) => {
     const updatedIsCorrect = {
       sex: selected.name == "Select Sex" ? true : false,
@@ -109,21 +119,22 @@ function DialogModal(props) {
 
     setIsCorrect(updatedIsCorrect);
 
-    /// Preparing the data
-    const user = {
-      fullname: data.fullname,
-      username: data.username,
-      email: data.email,
-      phone: data.phone,
-      password: data.password,
-      sex: selected.name.toLowerCase(),
-      userType: selectedUser.name.toLowerCase(),
-    };
+    const formData = new FormData();
+
+    formData.append("fullname", data.fullname);
+    formData.append("username", data.username);
+    formData.append("email", data.email);
+    formData.append("phone", data.phone);
+    formData.append("password", data.password);
+    formData.append("sex", selected.name.toLowerCase());
+    formData.append("userType", selectedUser.name.toLowerCase());
+    if (image) formData.append("image", image);
+    
     setLoading(true);
 
     // Making the API CALL request and dealing with results
     try {
-      const response = await updateUserApi(user,props?.user?.id);
+      const response = await updateUserApi(formData, props?.user?.id);
 
       if (response.success) {
         setTimeout(() => {
@@ -200,6 +211,20 @@ function DialogModal(props) {
                   <p className="text-red-600">{errors.phone.message}</p>
                 )}
               </FormItem>
+              <FormItem>
+                <FormLabel className="flex items-center mb-2 ml-1">
+                  <Asterisk color="#C40C0C" />
+                  <span>Profile Picture</span>
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                  />
+                </FormControl>
+              </FormItem>
+
               {/* SELECT SEX COMPONENT */}
 
               <FormItem>

@@ -68,10 +68,11 @@ export const DeleteUserApi = async (payload) => {
 //   }
 // };
 
-export const changePassword = async (payload,id) => {
+export const changePassword = async (payload, id) => {
   try {
     const response = await axiosInistance.post(
-      `/api/users/change-password/${id}`,payload
+      `/api/users/change-password/${id}`,
+      payload
     );
     return response.data;
   } catch (error) {
