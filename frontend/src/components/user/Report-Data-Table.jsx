@@ -22,12 +22,7 @@ import {
     useReactTable,
   } from "@tanstack/react-table";
   // Owned by Visibility
-  import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuTrigger,
-  } from "@/components/ui/dropdown-menu";
+
   
   import {
     Table,

@@ -22,11 +22,11 @@ const adminSidebar = [
     text: "Users Report",
     route: "report",
   },
-  {
-    icon: "Boxes",
-    text: "Transactions",
-    route: "transaction",
-  },
+  // {
+  //   icon: "Boxes",
+  //   text: "Transactions",
+  //   route: "transaction",
+  // },
   {
     icon: "AudioWaveform",
     text: "Reports",

@@ -1,9 +1,13 @@
 import express from 'express'
-import { addManyTransactions, addTransaction, editTransaction, getActiveUserTransactions, getEachTransactionsUser, getTransactions, getTransactionsByUser, getTransactionsByUsers, removeTransaction } from '../controllers/transactionController.js';
+import { addManyTransactions, addTransaction, editTransaction, getActiveUserTransactions, getEachTransactionsUser, getTransactions, getTransactionsByUser, getTransactionsByUsers, removeTransaction, transactionsByDaily, transactionsByDays, transactionsByMonthly, transactionsByWeekly } from '../controllers/transactionController.js';
 import { authUser, authenticate } from '../middleware/authMiddleware.js';
 const transactionRouter = express.Router();
 
 transactionRouter.get('/get-transactions',authenticate,getTransactions);
+transactionRouter.get('/get-transactions-by-days/:id',authenticate,transactionsByDays);
+transactionRouter.get('/get-transactions-by-daily',authenticate,transactionsByDaily);
+transactionRouter.get('/get-transactions-by-weekly',authenticate,transactionsByWeekly);
+transactionRouter.get('/get-transactions-by-monthly/:id',authenticate,transactionsByMonthly);
 transactionRouter.get('/get-transactions-by-active-user/:id',authenticate,getActiveUserTransactions);
 transactionRouter.get('/get-transactions-by-each-user',getEachTransactionsUser);
 transactionRouter.get('/get-transactions-by-each-username/:id',getTransactionsByUsers);

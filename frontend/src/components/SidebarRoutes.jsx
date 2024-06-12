@@ -8,8 +8,12 @@ import Transactions from "./Transactions";
 import UsersReport from "./UsersReport";
 import UserProfile from "./UserProfile";
 import Tanks from "./Tanks";
+import Reports from "./Reports";
 
 function SidebarRoutes() {
+
+  
+
   return (
     <Home>
       <Routes>
@@ -60,7 +64,7 @@ function SidebarRoutes() {
           path={"/reports"}
           element={
             <ProtectedRoute>
-              <UsersReport />
+              <Reports />
             </ProtectedRoute>
           }
         />

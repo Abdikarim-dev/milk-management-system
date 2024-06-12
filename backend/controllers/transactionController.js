@@ -93,19 +93,19 @@ export const addTransaction = async (req, res) => {
       });
     const transaction = await prisma.transaction.create({
       data: {
-        litre:parseFloat(litre),
-        price:parseFloat(price),
+        litre: parseFloat(litre),
+        price: parseFloat(price),
         // user: { connect: { id: parseInt(userId) } },
         // milkTank: { connect: { id: parseInt(milkTankId) } },
         userId,
-        milkTankId
+        milkTankId,
       },
     });
 
     await prisma.milkTank.update({
-      where:{id:milkTankId},
-      data:{quantity:milkTank.quantity - litre}
-    })
+      where: { id: milkTankId },
+      data: { quantity: milkTank.quantity - litre },
+    });
     res.status(200).send({
       success: true,
       message: "Transaction Completed Successfully",
@@ -180,7 +180,6 @@ export async function getEachTransactionsUser(req, res) {
       },
     });
     const allUsers = await prisma.user.findMany();
-
 
     // Map the result to include username from allUsers array
     const fullInfo = result.map((transaction) => {
@@ -268,3 +267,209 @@ export const getActiveUserTransactions = async (req, res) => {
 //     });
 //   }
 // };
+
+// Utility function to format date to YYYY-MM-DD
+const formatDate = (date) => date.toISOString().split("T")[0];
+
+// Utility function to get the last N days
+const getLastNDays = (n) => {
+  const dates = [];
+  for (let i = 0; i < n; i++) {
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    dates.push(formatDate(date));
+  }
+  return dates;
+};
+
+// Utility function to get last 7 days with day names
+const getLast7DaysWithNames = () => {
+  const days = [];
+  const dayNames = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  for (let i = 0; i < 7; i++) {
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    days.push({ date: formatDate(date), name: dayNames[date.getDay()] });
+  }
+  return days;
+};
+
+// Utility function to group transactions
+const groupTransactions = (transactions, dates) => {
+  const groupedData = dates.reduce((acc, date) => {
+    acc[date] = { date, noOfTransactions: 0 };
+    return acc;
+  }, {});
+
+  transactions.forEach((transaction) => {
+    const date = formatDate(transaction.createdAt);
+    if (groupedData[date]) {
+      groupedData[date].noOfTransactions += 1;
+    }
+  });
+
+  return Object.values(groupedData);
+};
+
+export const transactionsByDays = async (req, res) => {
+  try {
+    const transactions = await prisma.transaction.findMany({
+      include: {
+        user: true,
+      },
+      where: {
+        userId: parseInt(req.params.id),
+      },
+    });
+
+    // Grouping transactions by user and date
+    const groupedData = transactions.reduce((acc, transaction) => {
+      const date = transaction.createdAt.toISOString().split("T")[0];
+      const userKey = `${transaction.user.fullname}_${date}`;
+
+      if (!acc[userKey]) {
+        acc[userKey] = {
+          fullname: transaction.user.fullname,
+          date: date,
+          noOfTransactions: 0,
+        };
+      }
+      acc[userKey].noOfTransactions += 1;
+      return acc;
+    }, {});
+
+    const result = Object.values(groupedData);
+
+    res.status(200).send({
+      success: true,
+      message: result,
+    });
+  } catch (error) {
+    res.status(400).send({
+      success: false,
+      message: "An error occured : " + error,
+    });
+  }
+};
+export const transactionsByDaily = async (req, res) => {
+  try {
+    const today = formatDate(new Date());
+    const transactions = await prisma.transaction.findMany({
+      where: {
+        createdAt: {
+          gte: new Date(today + "T00:00:00.000Z"),
+          lt: new Date(today + "T23:59:59.999Z"),
+        },
+      },
+      include: {
+        user: true,
+      },
+    });
+
+    const result = transactions.reduce((acc, transaction) => {
+      const username = transaction.user.fullname;
+      const id = transaction.user.id;
+      const litre = transaction.litre;
+      const price = transaction.price;
+      if (!acc[username]) {
+        acc[username] = {
+          id,
+          username,
+          litre: 0,
+          price: 0,
+          noOfTransactions: 0,
+          date: today,
+        };
+      }
+      acc[username].litre += parseFloat(litre);
+      acc[username].price += price;
+      acc[username].noOfTransactions += 1;
+      return acc;
+    }, {});
+
+    res.status(200).send({
+      success: true,
+      message: Object.values(result),
+    });
+  } catch (error) {
+    res.status(400).send({
+      success: false,
+      message: "An error occured : " + error,
+    });
+  }
+};
+export const transactionsByWeekly = async (req, res) => {
+  try {
+    const last7Days = getLast7DaysWithNames();
+    const transactions = await prisma.transaction.findMany({
+      where: {
+        createdAt: {
+          gte: new Date(last7Days[6].date + "T00:00:00.000Z"),
+        },
+      },
+      include: {
+        user: true,
+      },
+    });
+
+    const groupedData = last7Days.reduce((acc, { date, name }) => {
+      acc[date] = { date, name, noOfTransactions: 0 };
+      return acc;
+    }, {});
+
+    transactions.forEach((transaction) => {
+      const date = formatDate(transaction.createdAt);
+      if (groupedData[date]) {
+        groupedData[date].noOfTransactions += 1;
+      }
+    });
+
+    
+
+    res.status(200).send({
+      success: true,
+      message: groupedData,
+    });
+  } catch (error) {
+    res.status(400).send({
+      success: false,
+      message: "An error occured : " + error,
+    });
+  }
+};
+export const transactionsByMonthly = async (req, res) => {
+  try {
+    const last30Days = getLastNDays(30);
+    const transactions = await prisma.transaction.findMany({
+      where: {
+        createdAt: {
+          gte: new Date(last30Days[29] + "T00:00:00.000Z"),
+        },
+        userId: parseInt(req.params.id),
+      },
+      include: {
+        user: true,
+      },
+    });
+
+    const groupedData = groupTransactions(transactions, last30Days);
+
+    res.status(200).send({
+      success: true,
+      message: groupedData,
+    });
+  } catch (error) {
+    res.status(400).send({
+      success: false,
+      message: "An error occured : " + error,
+    });
+  }
+};

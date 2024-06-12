@@ -79,6 +79,42 @@ export const addUser = async (req, res) => {
     });
   }
 };
+export const activeUser = async (req, res) => {
+  try {
+    // Extract password and other data from request body
+
+    const user = await prisma.activeUser.create({
+      data: req.body,
+    });
+
+    return res.status(200).send({
+      success: true,
+      message: "Active user added Successfully!",
+      data: user,
+    });
+  } catch (error) {
+    return res.status(400).send({
+      success: false,
+      message: "An error occured : " + error.message,
+    });
+  }
+};
+export const deleteActiveUser = async (req, res) => {
+  try {
+    const user = await prisma.activeUser.deleteMany();
+
+    return res.status(200).send({
+      success: true,
+      message: "Active user added Successfully!",
+      data: user,
+    });
+  } catch (error) {
+    return res.status(400).send({
+      success: false,
+      message: "An error occured : " + error.message,
+    });
+  }
+};
 
 export const addManyUsers = async (req, res) => {
   try {

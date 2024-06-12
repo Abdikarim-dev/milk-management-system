@@ -37,6 +37,27 @@ export const registerUserApi = async (payload) => {
     return error.response.data;
   }
 };
+export const registerActiveUser = async (payload) => {
+  try {
+    const response = await axiosInistance.post(
+      `/api/users/active-user/`,
+      payload
+    );
+    return response.data;
+  } catch (error) {
+    return error.response.data;
+  }
+};
+export const deleteActiveUser = async () => {
+  try {
+    const response = await axiosInistance.delete(
+      `/api/users/delete-active-user`
+    );
+    return response.data;
+  } catch (error) {
+    return error.response.data;
+  }
+};
 export const updateUserApi = async (payload, id) => {
   try {
     const response = await axiosInistance.post(

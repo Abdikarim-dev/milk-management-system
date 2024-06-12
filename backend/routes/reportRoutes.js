@@ -5,7 +5,7 @@ const router = express.Router();
 router.get("/daily", getDailyReport);
 router.get("/weekly", getWeeklyReport);
 router.get("/monthly", getMonthlyReport);
-router.get("/custom", getCustomReport);
+router.post("/custom", getCustomReport);
 router.get("/user/:userId", getUserTransactionReport);
 
 export default router;

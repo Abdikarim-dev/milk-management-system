@@ -15,6 +15,7 @@ import userReducer from "./features/userSlice.js"; // The path to your user slic
 export const store = configureStore({
   reducer: {
     user: userReducer,
+    // report: reportReducer,
   },
   // middleware: (getDefaultMiddleware) =>
   //   getDefaultMiddleware({

@@ -1,4 +1,4 @@
-import { getUserInfo } from "@/apicalls/users";
+import { deleteActiveUser, getUserInfo } from "@/apicalls/users";
 import { getUserDetails } from "@/redux/features/userSlice";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
@@ -33,6 +33,7 @@ function ProtectedRoute({ children }) {
 
   useEffect(() => {
     if (!localStorage.getItem("token")) {
+      deleteActiveUser()
       navigate("/login");
     } else {
       getData();

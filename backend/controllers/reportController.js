@@ -49,8 +49,21 @@ export const getDailyReport = async (req, res) => {
         price: true,
       },
     });
+    const allUsers = await prisma.user.findMany();
 
-    res.status(200).json({ message: "success", transactions, result });
+    // Map the result to include username from allUsers array
+    const fullInfo = result.map((transaction) => {
+      const user = allUsers.find((user) => user.id === transaction.userId);
+      return {
+        userId: transaction.userId,
+        username: user ? user.username : "Unknown",
+        fullname: user ? user.fullname : "Unknown",
+        litre: transaction._sum.litre,
+        price: transaction._sum.price,
+      };
+    });
+
+    res.status(200).json({ message: "success", transactions, fullInfo });
   } catch (error) {
     res.status(500).json({ message: "Error fetching daily report", error });
   }
@@ -89,7 +102,21 @@ export const getWeeklyReport = async (req, res) => {
       },
     });
 
-    res.status(200).json({ message: "success", transactions, result });
+    const allUsers = await prisma.user.findMany();
+
+    // Map the result to include username from allUsers array
+    const fullInfo = result.map((transaction) => {
+      const user = allUsers.find((user) => user.id === transaction.userId);
+      return {
+        userId: transaction.userId,
+        username: user ? user.username : "Unknown",
+        fullname: user ? user.fullname : "Unknown",
+        litre: transaction._sum.litre,
+        price: transaction._sum.price,
+      };
+    });
+
+    res.status(200).json({ message: "success", transactions, fullInfo });
   } catch (error) {
     res.status(500).json({ message: "Error fetching weekly report", error });
   }
@@ -128,7 +155,21 @@ export const getMonthlyReport = async (req, res) => {
       },
     });
 
-    res.status(200).json({ message: "success", transactions, result });
+    const allUsers = await prisma.user.findMany();
+
+    // Map the result to include username from allUsers array
+    const fullInfo = result.map((transaction) => {
+      const user = allUsers.find((user) => user.id === transaction.userId);
+      return {
+        userId: transaction.userId,
+        username: user ? user.username : "Unknown",
+        fullname: user ? user.fullname : "Unknown",
+        litre: transaction._sum.litre,
+        price: transaction._sum.price,
+      };
+    });
+
+    res.status(200).json({ message: "success", transactions, fullInfo });
   } catch (error) {
     res.status(500).json({ message: "Error fetching monthly report", error });
   }
@@ -136,9 +177,14 @@ export const getMonthlyReport = async (req, res) => {
 
 export const getCustomReport = async (req, res) => {
   try {
+    console.log("HERE")
     const { startDate, endDate } = req.body;
+    console.log(startDate)
+    console.log(endDate)
     const start = new Date(startDate);
     const end = new Date(endDate);
+
+    
 
     const transactions = await prisma.transaction.findMany({
       where: {
@@ -167,7 +213,21 @@ export const getCustomReport = async (req, res) => {
       },
     });
 
-    res.status(200).json({ message: "success", transactions, result });
+    const allUsers = await prisma.user.findMany();
+
+    // Map the result to include username from allUsers array
+    const fullInfo = result.map((transaction) => {
+      const user = allUsers.find((user) => user.id === transaction.userId);
+      return {
+        userId: transaction.userId,
+        username: user ? user.username : "Unknown",
+        fullname: user ? user.fullname : "Unknown",
+        litre: transaction._sum.litre,
+        price: transaction._sum.price,
+      };
+    });
+
+    res.status(200).json({ message: "success", transactions, fullInfo });
   } catch (error) {
     res.status(500).json({ message: "Error fetching custom report", error });
   }

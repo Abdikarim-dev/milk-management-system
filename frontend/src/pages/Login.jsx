@@ -1,5 +1,9 @@
 // import { useAuth } from "@/AuthProvider";
-import { loginUserApi } from "@/apicalls/users";
+import {
+  deleteActiveUser,
+  loginUserApi,
+  registerActiveUser,
+} from "@/apicalls/users";
 import { Form, FormControl, FormItem, FormLabel } from "@/components/ui/form";
 
 import {
@@ -26,8 +30,16 @@ function Login() {
   const userInfo = useSelector((state) => state.user.user);
 
   useEffect(() => {
-    if (userInfo) navigate("/home");
-  }, []);
+    const fetchData = async () => {
+      if (!userInfo) {
+        await deleteActiveUser();
+      } else {
+        navigate("/home");
+      }
+    };
+
+    fetchData();
+  }, [navigate]);
 
   const handleInputChange = (event) => {
     setFormData({
@@ -43,16 +55,23 @@ function Login() {
 
     try {
       const data = await loginUserApi(formData);
-      
+
       const user = {
         username: data?.username,
         expiresIn: data?.expiresIn,
-        token:data?.token
+        token: data?.token,
       };
+
+      const activeUser = {
+        id: 1,
+        userId: data?.username.id,
+      };
+
+      await registerActiveUser(activeUser);
+
       dispatch(loginUser(user));
-      navigate('/home')
+      navigate("/home");
       toast.success("LOGGED IN SUCCESSFULLY!");
-      
     } catch (error) {
       setLoading(false);
       console.log(error.message);
@@ -91,10 +110,10 @@ function Login() {
           >
             <div>
               <label
-                htmlFor="email"
+                htmlFor="username"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
-                Email address
+                Username
               </label>
               <div className="mt-2">
                 <input

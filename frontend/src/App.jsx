@@ -15,9 +15,9 @@ function App() {
         <Route
           path="/"
           element={
-            <PublicRoute>
+            // <PublicRoute>
               <LandingPage />
-            </PublicRoute>
+            // </PublicRoute>
           }
         ></Route>
         <Route

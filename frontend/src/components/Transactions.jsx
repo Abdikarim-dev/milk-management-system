@@ -15,7 +15,11 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { RegisterTransaction, getSpecificTransactions, getTransactionsByUser } from "@/apicalls/transactions";
+import {
+  RegisterTransaction,
+  getSpecificTransactions,
+  getTransactionsByUser,
+} from "@/apicalls/transactions";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -162,13 +166,13 @@ function Transactions() {
 
   const addTransaction = async (e) => {
     e.preventDefault();
-   
 
     /// Preparing the data
     const transaction = {
       litre: selectedInfo.litre,
       price: selectedInfo.price,
       userId: user?.id,
+      milkTankId: 1,
     };
     setLoading(true);
 
@@ -180,7 +184,7 @@ function Transactions() {
         setTimeout(() => {
           toast.success(response.message);
         }, 500);
-        navigate('/home')
+        navigate("/home");
       } else {
         setTimeout(() => {
           console.log(response);
