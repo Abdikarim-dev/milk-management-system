@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 12, 2024 at 04:32 PM
+-- Generation Time: Jun 12, 2024 at 06:15 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.1.12
 
@@ -37,19 +37,20 @@ CREATE TABLE `activeuser` (
 --
 
 INSERT INTO `activeuser` (`id`, `userId`) VALUES
-(1, 6);
+(1, 2);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `level`
+-- Table structure for table `logs`
 --
 
-CREATE TABLE `level` (
+CREATE TABLE `logs` (
   `id` int(11) NOT NULL,
-  `userId` int(11) NOT NULL,
-  `Warning` varchar(191) NOT NULL,
-  `createdAt` datetime(3) NOT NULL DEFAULT current_timestamp(3)
+  `type` varchar(191) NOT NULL,
+  `note` varchar(191) NOT NULL,
+  `createdAt` datetime(3) NOT NULL DEFAULT current_timestamp(3),
+  `userId` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -138,7 +139,6 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `fullname`, `username`, `email`, `password`, `phone`, `sex`, `userType`, `createdAt`, `updatedAt`, `image`) VALUES
-(1, 'Aweis Sabrie', 'sabrie', 'sabrie@gmail.com', '$2b$10$ibyupylxKSiRqtm9aaujO.jbb30Iu8ddjcIkeBjtTGUleMzxIP0KW', '+2526177997701', 'male', 'user', '2024-06-10 15:00:32.790', '2024-06-12 11:46:21.068', NULL),
 (2, 'Abdikarim Ismail Ali', 'abdikarim', 'abdikarim@gmail.com', '$2b$10$qNaeBP07nEuuz5hmPba8vuEfiOkPvvb4Lfky3YHbYhfdWl6H5jCBi', '+252617710604', 'male', 'admin', '2024-06-10 16:08:01.639', '2024-06-12 11:46:15.598', 'http://res.cloudinary.com/dlbba7vpc/image/upload/v1718192672/dj9r6kvo86p5adywbrpj.jpg'),
 (4, 'Nafisa Hassan Jama', 'Nafisa', 'nafisa328@gmail.com', '$2b$10$sRtghq2p9whqa5I6Kdjk7exZX2qlWKTMAyMMTh6Lq2nuLnav0A9ga', '+2526179898989', 'female', 'user', '2024-06-10 16:13:27.615', '2024-06-12 11:14:38.477', 'http://res.cloudinary.com/dlbba7vpc/image/upload/v1718190100/o1cdqswalxwqre90q2nd.jpg'),
 (5, 'Ramla Mohamed ', 'ramla', 'ramla328@gmail.com', '$2b$10$4USGWz6u7xktbChSYOwNmObZDxD/fVkY7RawHZ/xV0P82UnA2kvby', '+252617001122', 'female', 'user', '2024-06-10 16:14:45.358', '2024-06-10 16:14:45.358', NULL),
@@ -168,6 +168,7 @@ CREATE TABLE `_prisma_migrations` (
 INSERT INTO `_prisma_migrations` (`id`, `checksum`, `finished_at`, `migration_name`, `logs`, `rolled_back_at`, `started_at`, `applied_steps_count`) VALUES
 ('07ca7df7-2d0e-4385-a851-80a8fe11fead', '60f0225279881a970d4c860223f7f7be716068d498a151ff42dfd970bebe8aef', '2024-06-10 14:31:37.184', '20240610105403_add_active_user_model', NULL, NULL, '2024-06-10 14:31:37.066', 1),
 ('24b0dd69-39df-4c74-8a0b-c39ab93b0d7d', '5449035fc8c7260479546dde8f5e0c98fdd19a08c247e2e63c0b564bd030727e', '2024-06-12 06:46:24.092', '20240612064623_updated_transaction_table_by_removing_created_at_column', NULL, NULL, '2024-06-12 06:46:24.060', 1),
+('34205525-1804-47fb-8449-c399368dd226', 'ecf57dcb690af9041a6ce9a0556e9fcc2395bb16565f14d42f0483296605a0f3', '2024-06-12 16:10:50.139', '20240612161049_replaced_level_table_to_logs_table', NULL, NULL, '2024-06-12 16:10:50.045', 1),
 ('344e731c-5e55-4cf5-888e-f7beae8f9ff5', 'c2e17111bacd2e22ba7b3089ce86a4124ce8448817588d0f315c012481ed8fb4', '2024-06-10 14:31:36.954', '20240526062118_add_milk_tank', NULL, NULL, '2024-06-10 14:31:36.906', 1),
 ('65e41dc5-d802-41d2-aecd-e49af37417c1', '908935bb56136339384918f2e88823f1c6acd2b0ad142c015c7136edeb73e796', '2024-06-10 14:57:26.298', '20240610145725_update_activeuser_model', NULL, NULL, '2024-06-10 14:57:26.157', 1),
 ('695a0a8b-82d6-448d-9a88-11470592bf29', '7f49504589076278c557cd0e99ebaa4af3520a74cde0605e8fa5a93fba58d286', '2024-06-10 14:31:37.268', '20240610105542_add_active_user_model', NULL, NULL, '2024-06-10 14:31:37.187', 1),
@@ -191,11 +192,11 @@ ALTER TABLE `activeuser`
   ADD KEY `ActiveUser_userId_fkey` (`userId`);
 
 --
--- Indexes for table `level`
+-- Indexes for table `logs`
 --
-ALTER TABLE `level`
+ALTER TABLE `logs`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `level_userId_fkey` (`userId`);
+  ADD KEY `Logs_userId_fkey` (`userId`);
 
 --
 -- Indexes for table `milktank`
@@ -231,10 +232,10 @@ ALTER TABLE `_prisma_migrations`
 --
 
 --
--- AUTO_INCREMENT for table `level`
+-- AUTO_INCREMENT for table `logs`
 --
-ALTER TABLE `level`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+ALTER TABLE `logs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `milktank`
@@ -265,10 +266,10 @@ ALTER TABLE `activeuser`
   ADD CONSTRAINT `ActiveUser_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON UPDATE CASCADE;
 
 --
--- Constraints for table `level`
+-- Constraints for table `logs`
 --
-ALTER TABLE `level`
-  ADD CONSTRAINT `level_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON UPDATE CASCADE;
+ALTER TABLE `logs`
+  ADD CONSTRAINT `Logs_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON UPDATE CASCADE;
 
 --
 -- Constraints for table `transaction`
