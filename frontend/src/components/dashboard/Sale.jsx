@@ -5,7 +5,6 @@ function Sale({ amount_info, price_info, amount, price, transactionInfo }) {
       (transaction) => transaction.litre.toString() === inputPrice
     );
 
-    console.log(transactionInfo)
     // Return the transaction name if found, otherwise return a message indicating no match was found
     return transaction ? transaction.name : "No match found";
   }
@@ -19,7 +18,7 @@ function Sale({ amount_info, price_info, amount, price, transactionInfo }) {
         <p className="text-md font-semibold">
           {findTransactionNameByPrice(amount)}
         </p>
-        <p className="text-[#82828A]">{price.toLocaleString()} SOS</p>
+        <p className="text-[#82828A]">${price.toLocaleString()} </p>
       </div>
       {/* 
       <div className="text-xl font-semibold">{price}</div> */}

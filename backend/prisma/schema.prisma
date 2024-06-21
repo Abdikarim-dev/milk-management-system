@@ -21,7 +21,7 @@ model User {
   updatedAt   DateTime      @updatedAt
   Transaction Transaction[]
   activeUsers ActiveUser[]
-  level       level[]
+  Logs        Logs[]
 }
 
 model Transaction {
@@ -33,7 +33,6 @@ model Transaction {
   MilkTank   MilkTank @relation(fields: [milkTankId], references: [id])
   milkTankId Int
   createdAt  DateTime @default(now())
-  // updatedAt  DateTime @updatedAt
 }
 
 model MilkTank {
@@ -52,9 +51,10 @@ model ActiveUser {
   userId Int
 }
 
-model level {
+model Logs {
   id        Int      @id @default(autoincrement())
-  Warning   String
+  type      String
+  note      String
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id])
   userId    Int

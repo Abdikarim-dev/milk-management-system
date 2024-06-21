@@ -7,6 +7,7 @@ import userRouter from "./routes/userRouter.js";
 import transactionRouter from "./routes/transactionRoutes.js";
 import tankRouter from "./routes/tankRoutes.js";
 import reportRouter from "./routes/reportRoutes.js";
+import logsRouter from "./routes/logsRoutes.js";
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use("/api/users", userRouter);
 app.use("/api/transaction", transactionRouter);
 app.use("/api/tank", tankRouter);
 app.use("/api/report", reportRouter);
+app.use("/api/logs", logsRouter);
 app.use("*", (req, res) => {
   res.redirect("/");
 });
@@ -24,4 +26,3 @@ app.use("*", (req, res) => {
 app.listen(PORT, () => {
   console.log(`http://localhost:${PORT}`);
 });
-

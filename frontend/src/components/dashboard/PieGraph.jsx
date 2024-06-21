@@ -71,7 +71,7 @@ function PieGraph() {
     },
   };
   return (
-    <div className="w-full lg:w-1/3 h-[450px] border border-[#E4E4E7] rounded-lg px-4 py-5 ">
+    <div className="w-full lg:w-1/3 h-[450px] bg-white border border-[#E4E4E7] rounded-lg px-4 py-5 ">
       <Pie options={options} data={lineChartData} />
     </div>
   );

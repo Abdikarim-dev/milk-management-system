@@ -30,7 +30,7 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     loginUser: (state, action) => {
-      console.log(action.payload);
+      // console.log(action.payload);
       const { username, expiresIn, token } = action.payload;
 
       const expirationTime = new Date().getTime() + expiresIn * 1000;

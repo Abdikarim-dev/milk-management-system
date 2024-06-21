@@ -44,8 +44,8 @@ function CustomReport({ setData, setTotal }) {
       const fetchData = async () => {
         const data = await customReport(dataToBeSend);
         console.log(dataToBeSend)
-        setData(data?.transactions);
-        setTotal(data?.fullInfo);
+        setData(data?.fullInfo);
+        setTotal(data?.totals);
       };
       fetchData();
     } catch (error) {
@@ -53,7 +53,7 @@ function CustomReport({ setData, setTotal }) {
     }
   };
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="flex items-center gap-3" onSubmit={handleSubmit}>
       <Popover>
         <PopoverTrigger asChild>
           <Button

@@ -1,9 +1,10 @@
-import { Users, LineChart, HandCoins } from 'lucide-react';
+import { Users, LineChart, HandCoins, Milk } from "lucide-react";
 
 const icons = {
+  Milk,
   Users: Users,
   LineChart: LineChart,
-  HandCoins: HandCoins
+  HandCoins: HandCoins,
 };
 function Overview({ name, price, review, icon }) {
   const Icon = icons[icon]; // Dynamically determine the icon
@@ -14,9 +15,7 @@ function Overview({ name, price, review, icon }) {
         <p className="text-3xl font-semibold">{price}</p>
         <p className="text-[#82828A] text-md">{review}</p>
       </div>
-      <div>
-        {< Icon />}
-      </div>
+      <div>{<Icon className="text-dark-blue" />}</div>
     </div>
   );
 }

@@ -14,6 +14,29 @@ const getRandomColor = () => {
   return `rgb(${r},${g},${b})`;
 }
 
+const colorPalette = [
+  "#1B265B", // Essential Color 1
+  "#007BFF", // Essential Color 2
+  "#16204D",
+  "#005FCC",
+  "#131A42",
+  "#004CAA",
+  "#101536",
+  "#003988",
+  "#0D0F2A",
+  "#002666",
+  "#0A0A1F",
+  "#001344",
+  "#070514",
+  "#000022",
+  "#0033A0",
+  "#002080",
+  "#001860",
+  "#010C48",
+  "#0044CC",
+  "#0033FF"
+];
+
 const usernames = data?.message?.map((element) => element?.username);
 const litres = data?.message?.map((element) => element?.litre);
 const backgroundColors = data?.message?.map(() => getRandomColor());

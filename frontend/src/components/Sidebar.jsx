@@ -7,6 +7,7 @@ import {
   UserCircle,
   AudioWaveform,
   Milk,
+  Cog,
   MoreVertical,
 } from "lucide-react";
 import { useSelector } from "react-redux";
@@ -14,12 +15,13 @@ import { useSelector } from "react-redux";
 const SidebarContext = createContext();
 
 const icons = {
-  LayoutDashboard: LayoutDashboard,
-  UserCircle: UserCircle,
-  BarChart3: BarChart3,
-  Boxes: Boxes,
-  Milk: Milk,
+  LayoutDashboard,
+  UserCircle,
+  BarChart3,
+  Boxes,
+  Milk,
   AudioWaveform,
+  Cog,
 };
 
 function Sidebar({ children }) {
@@ -43,11 +45,9 @@ function Sidebar({ children }) {
             !expanded ? "hidden" : ""
           } pb-2`}
         >
-          <img
-            className="rounded-full w-[60px] h-[60px]"
-            src={user?.image}
-            alt=""
-          />
+          <div className="rounded-full w-[100px] h-[100px] flex justify-center items-center">
+            <img className="rounded-full w-full h-full" src={user?.image} alt="" />
+          </div>
           <h4 className="text-xl font-semibold">{user?.username}</h4>
           <h4 className="font-extralight">{user?.userType}</h4>
         </div>

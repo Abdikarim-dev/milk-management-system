@@ -17,11 +17,11 @@ const adminSidebar = [
     text: "Users",
     route: "user",
   },
-  {
-    icon: "BarChart3",
-    text: "Users Report",
-    route: "report",
-  },
+  // {
+  //   icon: "BarChart3",
+  //   text: "Users Report",
+  //   route: "report",
+  // },
   // {
   //   icon: "Boxes",
   //   text: "Transactions",
@@ -31,6 +31,11 @@ const adminSidebar = [
     icon: "AudioWaveform",
     text: "Reports",
     route: "reports",
+  },
+  {
+    icon: "Cog",
+    text: "System Activity",
+    route: "log",
   },
   {
     icon: "Boxes",
@@ -54,6 +59,7 @@ const userSidebar = [
     text: "Transactions",
     route: "transaction",
   },
+
   {
     icon: "Boxes",
     text: "User Profile",

@@ -1,17 +1,17 @@
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  DoubleArrowLeftIcon,
-  DoubleArrowRightIcon,
-} from "@radix-ui/react-icons";
+// import {
+//   ChevronLeftIcon,
+//   ChevronRightIcon,
+//   DoubleArrowLeftIcon,
+//   DoubleArrowRightIcon,
+// } from "@radix-ui/react-icons";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/components/ui/select";
 
 import {
   flexRender,
@@ -22,12 +22,12 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 // Owned by Visibility
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+// import {
+//   DropdownMenu,
+//   DropdownMenuCheckboxItem,
+//   DropdownMenuContent,
+//   DropdownMenuTrigger,
+// } from "@/components/ui/dropdown-menu";
 
 import {
   Table,
@@ -37,10 +37,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
-import { Button } from "../ui/button";
+// import { Input } from "@/components/ui/input";
+// import { Button } from "../ui/button";
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+// import { ChevronDown } from "lucide-react";
 
 function DataTable({ columns, data }) {
   const [sorting, setSorting] = useState([]);
@@ -77,45 +77,7 @@ function DataTable({ columns, data }) {
 
   return (
     <div className="rounded-md border">
-      <div className="flex items-center px-4 py-4">
-        {/* INPUT FOR FILTERING */}
-        <Input
-          placeholder="Filter By Quantity..."
-          value={table.getColumn("quantity")?.getFilterValue() ?? ""}
-          onChange={(event) =>
-            table.getColumn("quantity")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
-        {/* DROP DOWN FOR COLUMN FILTERING */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-
+      
       {/* TABLE */}
       <div>
         <Table>
@@ -184,7 +146,7 @@ function DataTable({ columns, data }) {
           Next
         </Button>
       </div> */}
-      <div className="flex items-center justify-between px-2">
+      {/* <div className="flex items-center justify-between px-2">
         <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
@@ -255,7 +217,7 @@ function DataTable({ columns, data }) {
             </Button>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

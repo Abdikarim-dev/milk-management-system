@@ -9,11 +9,9 @@ import UsersReport from "./UsersReport";
 import UserProfile from "./UserProfile";
 import Tanks from "./Tanks";
 import Reports from "./Reports";
+import Logs from "./Logs";
 
 function SidebarRoutes() {
-
-  
-
   return (
     <Home>
       <Routes>
@@ -65,6 +63,14 @@ function SidebarRoutes() {
           element={
             <ProtectedRoute>
               <Reports />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={"/log"}
+          element={
+            <ProtectedRoute>
+              <Logs />
             </ProtectedRoute>
           }
         />

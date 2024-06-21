@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Sale from "./Sale.jsx";
 import { getTransactionsByUser } from "@/apicalls/transactions.js";
 
-const AMOUNT_PER_DHUCEY = 15000;
+const AMOUNT_PER_DHUCEY = 0.001;
 const transactionInfo = [
   {
     id: 0,
@@ -14,163 +14,126 @@ const transactionInfo = [
     id: 1,
     name: "Dhuceey",
     litre: 500,
-    price: AMOUNT_PER_DHUCEY * 1,
+    price: AMOUNT_PER_DHUCEY * 0,
   },
   {
     id: 2,
     name: "Dhalo",
     litre: 1000,
-    price: AMOUNT_PER_DHUCEY * 2,
+    price: AMOUNT_PER_DHUCEY * 1000,
   },
   {
     id: 3,
     name: "Dhalo Iyo Dhucey",
     litre: 1500,
-    price: AMOUNT_PER_DHUCEY * 3,
+    price: AMOUNT_PER_DHUCEY * 1500,
   },
   {
     id: 4,
     name: "2 Dhalo",
     litre: 2000,
-    price: AMOUNT_PER_DHUCEY * 4,
+    price: AMOUNT_PER_DHUCEY * 2000,
   },
   {
     id: 5,
     name: "2 Dhalo Iyo Dhucey",
     litre: 2500,
-    price: AMOUNT_PER_DHUCEY * 5,
+    price: AMOUNT_PER_DHUCEY * 2500,
   },
   {
     id: 6,
     name: "3 Dhalo",
     litre: 3000,
-    price: AMOUNT_PER_DHUCEY * 6,
+    price: AMOUNT_PER_DHUCEY * 3000,
   },
   {
     id: 7,
     name: "3 Dhalo Iyo Dhucey",
     litre: 3500,
-    price: AMOUNT_PER_DHUCEY * 7,
+    price: AMOUNT_PER_DHUCEY * 3500,
   },
   {
     id: 8,
     name: "4 Dhalo",
     litre: 4000,
-    price: AMOUNT_PER_DHUCEY * 8,
+    price: AMOUNT_PER_DHUCEY * 4000,
   },
   {
     id: 9,
     name: "4 Dhalo Iyo Dhucey",
     litre: 4500,
-    price: AMOUNT_PER_DHUCEY * 9,
+    price: AMOUNT_PER_DHUCEY * 4500,
   },
   {
     id: 10,
     name: "5 Dhalo",
     litre: 5000,
-    price: AMOUNT_PER_DHUCEY * 10,
+    price: AMOUNT_PER_DHUCEY * 5000,
   },
-  {
-    id: 11,
-    name: "5 Dhalo Iyo Dhucey",
-    litre: 5500,
-    price: AMOUNT_PER_DHUCEY * 11,
-  },
-  {
-    id: 12,
-    name: "6 Dhalo",
-    litre: 6000,
-    price: AMOUNT_PER_DHUCEY * 12,
-  },
-  {
-    id: 13,
-    name: "6 Dhalo Iyo Dhucey",
-    litre: 6500,
-    price: AMOUNT_PER_DHUCEY * 13,
-  },
-  {
-    id: 14,
-    name: "7 Dhalo",
-    litre: 7000,
-    price: AMOUNT_PER_DHUCEY * 14,
-  },
-  {
-    id: 15,
-    name: "7 Dhalo Iyo Dhucey",
-    litre: 7500,
-    price: AMOUNT_PER_DHUCEY * 15,
-  },
-  {
-    id: 16,
-    name: "8 Dhalo",
-    litre: 8000,
-    price: AMOUNT_PER_DHUCEY * 16,
-  },
-  {
-    id: 17,
-    name: "8 Dhalo Iyo Dhucey",
-    litre: 8500,
-    price: AMOUNT_PER_DHUCEY * 17,
-  },
-  {
-    id: 18,
-    name: "9 Dhalo",
-    litre: 9000,
-    price: AMOUNT_PER_DHUCEY * 18,
-  },
-  {
-    id: 19,
-    name: "9 Dhalo Iyo Dhucey",
-    litre: 9500,
-    price: AMOUNT_PER_DHUCEY * 19,
-  },
-  {
-    id: 20,
-    name: "10 Dhalo",
-    litre: 10000,
-    price: AMOUNT_PER_DHUCEY * 20,
-  },
+  // {
+  //   id: 11,
+  //   name: "5 Dhalo Iyo Dhucey",
+  //   litre: 5500,
+  //   price: AMOUNT_PER_DHUCEY * 11,
+  // },
+  // {
+  //   id: 12,
+  //   name: "6 Dhalo",
+  //   litre: 6000,
+  //   price: AMOUNT_PER_DHUCEY * 12,
+  // },
+  // {
+  //   id: 13,
+  //   name: "6 Dhalo Iyo Dhucey",
+  //   litre: 6500,
+  //   price: AMOUNT_PER_DHUCEY * 13,
+  // },
+  // {
+  //   id: 14,
+  //   name: "7 Dhalo",
+  //   litre: 7000,
+  //   price: AMOUNT_PER_DHUCEY * 14,
+  // },
+  // {
+  //   id: 15,
+  //   name: "7 Dhalo Iyo Dhucey",
+  //   litre: 7500,
+  //   price: AMOUNT_PER_DHUCEY * 15,
+  // },
+  // {
+  //   id: 16,
+  //   name: "8 Dhalo",
+  //   litre: 8000,
+  //   price: AMOUNT_PER_DHUCEY * 16,
+  // },
+  // {
+  //   id: 17,
+  //   name: "8 Dhalo Iyo Dhucey",
+  //   litre: 8500,
+  //   price: AMOUNT_PER_DHUCEY * 17,
+  // },
+  // {
+  //   id: 18,
+  //   name: "9 Dhalo",
+  //   litre: 9000,
+  //   price: AMOUNT_PER_DHUCEY * 18,
+  // },
+  // {
+  //   id: 19,
+  //   name: "9 Dhalo Iyo Dhucey",
+  //   litre: 9500,
+  //   price: AMOUNT_PER_DHUCEY * 19,
+  // },
+  // {
+  //   id: 20,
+  //   name: "10 Dhalo",
+  //   litre: 10000,
+  //   price: AMOUNT_PER_DHUCEY * 20,
+  // },
 ];
 
 function TopSales({ id }) {
   const [transactions, setTransactions] = useState([]);
-  const sales = [
-    {
-      id: 1,
-      // img: "https://i.pinimg.com/564x/4b/cc/54/4bcc54ebe6d0e6700e3df3047c1129c8.jpg",
-      name: "Iman Gadzhi",
-      email: "imangadzhi@gmail.com",
-      price: "+ $20,000.98",
-    },
-    {
-      id: 2,
-      // img: "https://i.pinimg.com/564x/89/8c/d6/898cd6082b8d4ff3f2b576140474b4ce.jpg",
-      name: "Harry Potter",
-      email: "harrypotter@gmail.com",
-      price: "+ $2,000.98",
-    },
-    {
-      id: 3,
-      // img: "https://i.pinimg.com/564x/b1/4e/9b/b14e9be4b190e00bd0605e7bb2dd2190.jpg",
-      name: "Katrina Omega",
-      email: "katrinaomega@gmail.com",
-      price: "+ $5,000.98",
-    },
-    {
-      id: 4,
-      // img: "https://i.pinimg.com/564x/09/3c/22/093c22dee18b0b297e9d4081b4947134.jpg",
-      name: "Karishna Kapoor",
-      email: "karishma@gmail.com",
-      price: "+ $1,000.98",
-    },
-    {
-      id: 5,
-      // img: "https://i.pinimg.com/564x/be/ae/6b/beae6b7e4f6e29e2ceb8cf7e58122a8c.jpg",
-      name: "Zheng Narruto",
-      email: "zheng@gmail.com",
-      price: "+ $4,000.98",
-    },
-  ];
 
   /**
    * Adds a new transaction to the state while ensuring it only keeps the latest five transactions.
@@ -197,17 +160,18 @@ function TopSales({ id }) {
     const fetchData = async () => {
       const response = await getTransactionsByUser(id);
 
+      console.log(response)
+
       processTransactions(response);
-      console.log(transactions);
       // Function to reformat the array excluding specific properties
-      const reformattedData = response?.map(
-        ({ user: { createdAt, updatedAt, id, ...userRest }, ...rest }) => {
-          return {
-            ...rest, // Spread to include all other properties of the item
-            ...userRest, // Spread to include all properties of the 'user' object, excluding the specified ones
-          };
-        }
-      );
+      // const reformattedData = response?.map(
+      //   ({ user: { createdAt, updatedAt, id, ...userRest }, ...rest }) => {
+      //     return {
+      //       ...rest, // Spread to include all other properties of the item
+      //       ...userRest, // Spread to include all properties of the 'user' object, excluding the specified ones
+      //     };
+      //   }
+      // );
     };
     fetchData();
   }, []);

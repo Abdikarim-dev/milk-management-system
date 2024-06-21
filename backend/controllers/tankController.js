@@ -17,7 +17,8 @@ const addTank = async (req, res) => {
   } catch (error) {
     res.status(400).send({
       success: false,
-      message: "Error occurred at the add milk tank controller: " + error.message,
+      message:
+        "Error occurred at the add milk tank controller: " + error.message,
     });
   }
 };
@@ -30,13 +31,19 @@ const editTank = async (req, res) => {
     const tankId = parseInt(id);
 
     if (isNaN(tankId)) {
-      return res.status(400).send({ success: false, message: "Invalid tank ID" });
+      return res
+        .status(400)
+        .send({ success: false, message: "Invalid tank ID" });
     }
 
-    const findTank = await prisma.milkTank.findUnique({ where: { id: tankId } });
+    const findTank = await prisma.milkTank.findUnique({
+      where: { id: tankId },
+    });
 
     if (!findTank) {
-      return res.status(404).send({ success: false, message: "Tank not found" });
+      return res
+        .status(404)
+        .send({ success: false, message: "Tank not found" });
     }
 
     const updatedData = { quantity: findTank.quantity };
@@ -54,6 +61,18 @@ const editTank = async (req, res) => {
       }
 
       updatedData.quantity = newQuantity;
+    }
+
+    if (refill) {
+      const logs = await prisma.logs.create({
+        data: {
+          type: "Refill Type",
+          note: `Added an amount of  (${
+            parseFloat(quantity) * 0.001
+          }) Litre. `,
+          userId: req.body.userId,
+        },
+      });
     }
 
     if (limit !== undefined) updatedData.limit = parseFloat(limit);
@@ -82,7 +101,9 @@ const removeTank = async (req, res) => {
     const tankId = parseInt(id);
 
     if (isNaN(tankId)) {
-      return res.status(400).send({ success: false, message: "Invalid tank ID" });
+      return res
+        .status(400)
+        .send({ success: false, message: "Invalid tank ID" });
     }
 
     const deleteTank = await prisma.milkTank.delete({

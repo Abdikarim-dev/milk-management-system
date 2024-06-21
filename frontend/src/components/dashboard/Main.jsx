@@ -86,9 +86,9 @@ function Main() {
     {
       id: 0,
       name: "Current Tank Amount",
-      price: Number(tank).toLocaleString(),
+      price: Number(tank * 0.001).toLocaleString(),
       review: "Litres",
-      icon: "Users",
+      icon: "Milk",
     },
     {
       id: 1,
@@ -97,7 +97,7 @@ function Main() {
         user?.userType === "admin"
           ? data.length.toLocaleString() || 0
           : users?._count?.userId || 0,
-      review: "+20.1% from last month",
+      review: "Users",
       icon: "Users",
     },
     {
@@ -105,9 +105,9 @@ function Main() {
       name: "No of Litres",
       price:
         user?.userType === "admin"
-          ? formData.litre.toLocaleString() || 0
-          : Number(users?._sum?.litre || 0).toLocaleString(),
-      review: "+180.1% from last month",
+          ? (formData.litre * 0.001).toLocaleString() || 0
+          : Number(users?._sum?.litre * 0.001 || 0).toLocaleString(),
+      review: "Litres",
       icon: "LineChart",
     },
     {
@@ -115,22 +115,24 @@ function Main() {
       name: "Total Revenue",
       price:
         user?.userType === "admin"
-          ? (formData.price.toLocaleString() || 0) + " SOS"
-          : (users?._sum?.price.toLocaleString() || 0) + " SOS",
-      review: "+19% from last month",
+          ? ` $${formData.price.toLocaleString() || 0} `
+          : ` $${users?._sum?.price.toLocaleString() || 0}`,
+      review: "Dollar",
       icon: "HandCoins",
     },
   ];
   return (
-    <div className={`px-4 lg:px-10  w-full ${tank>=2000 ? "pt-4":""} `}>
+    <div className={`px-4 lg:px-10  w-full ${tank >= 2000 ? "pt-4" : ""} `}>
       {tank <= 2000 ? (
         <Alert variant="destructive" className="mb-4">
-        <ExclamationTriangleIcon className="h-4 w-4" />
-        
-        <AlertTitle>
-          "Fuustada waxaa ku jirta tira aad u yar oo <span className="font-black">{Number(tank).toLocaleString()}</span> fadlan kusoo shub fuustada caano"
-        </AlertTitle>
-      </Alert>
+          <ExclamationTriangleIcon className="h-4 w-4" />
+
+          <AlertTitle>
+            "Fuustada waxaa ku jirta tira aad u yar oo{" "}
+            <span className="font-black">{Number(tank).toLocaleString()}</span>{" "}
+            fadlan kusoo shub fuustada caano"
+          </AlertTitle>
+        </Alert>
       ) : (
         <></>
       )}

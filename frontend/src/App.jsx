@@ -1,23 +1,21 @@
 import { Route, Routes } from "react-router-dom";
-import Login from "./pages/Login";
-// import { AuthProvider } from "./AuthProvider";
+import Login from "./pages/LoginPage";
 import SidebarRoutes from "./components/SidebarRoutes";
 import PublicRoute from "./components/PublicRoute";
 import LandingPage from "./pages/LandingPage";
 import { useSelector } from "react-redux";
-// import Demo from "./components/Demo";
 
 function App() {
+  const { user } = useSelector((state) => state.user);
   return (
     <>
-      {/* <AuthProvider> */}
       <Routes>
         <Route
           path="/"
           element={
-            // <PublicRoute>
+            <PublicRoute>
               <LandingPage />
-            // </PublicRoute>
+            </PublicRoute>
           }
         ></Route>
         <Route
@@ -37,10 +35,7 @@ function App() {
           }
         ></Route>
       </Routes>
-      <SidebarRoutes />
-
-      {/* </AuthProvider> */}
-      {/* <Demo/> */}
+      {user && <SidebarRoutes />}
     </>
   );
 }

@@ -2,7 +2,11 @@
 import { Fragment, useState, useEffect } from "react";
 import DataTable from "./tank/Data-Table";
 import { columns } from "./tank/columns";
-import { getTanksData, registerTanksApi } from "../apicalls/tanks.js";
+import {
+  getTanksData,
+  registerTanksApi,
+  updateTanksApi,
+} from "../apicalls/tanks.js";
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
@@ -24,6 +28,68 @@ function Tanks() {
   const [loading, setLoading] = useState(false);
   const [tanks, setTanks] = useState([]);
 
+  // const {
+  //   register,
+  //   handleSubmit,
+
+  //   formState: { errors },
+  // } = useForm({
+  //   resolver: zodResolver(formSchema),
+  // });
+
+  // const registerTank = async (data) => {
+  //   /// Preparing the data
+  //   const tank = {
+  //     quantity: data.quantity,
+  //     desc: data.description,
+  //   };
+  //   setLoading(true);
+
+  //   // Making the API CALL request and dealing with results
+  //   try {
+  //     const response = await registerTanksApi(tank);
+
+  //     if (response.success) {
+  //       setTimeout(() => {
+  //         toast.success(response.message);
+  //       }, 500);
+  //     } else {
+  //       setTimeout(() => {
+  //         console.log(response);
+  //         toast.error(response.message);
+  //       }, 500);
+  //     }
+  //   } catch (error) {
+  //     setLoading(false);
+  //     console.log(error.message);
+  //     toast.error("AN ERROR OCCURED PLEASE TRY AGAIN!");
+  //   }
+  //   setLoading(false);
+  // };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getTanksData();
+      setTanks(data.data);
+    };
+    fetchData();
+  }, []);
+
+  // const formSchema = z.object({
+  //   quantity: z
+  //     .string()
+  //     .refine((value) => !isNaN(parseFloat(value)), {
+  //       message: "Must be a number",
+  //     })
+  //     .transform((value) => parseFloat(value))
+  //     .refine((value) => value > 0, {
+  //       message: "Enter Litres greater than zero",
+  //     }),
+  //   description: z.string().nonempty({
+  //     message: "Description is a required field",
+  //   }),
+  // });
+
   const formSchema = z.object({
     quantity: z
       .string()
@@ -42,28 +108,38 @@ function Tanks() {
   const {
     register,
     handleSubmit,
-
+    reset,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(formSchema),
+    // defaultValues: {
+    //   quantity: tank.quantity,
+    //   description: tank.desc,
+    // },
   });
 
-  const registerTank = async (data) => {
+  const updateTank = async (data) => {
     /// Preparing the data
+    const id = 1;
     const tank = {
       quantity: data.quantity,
       desc: data.description,
+      refill: true,
     };
     setLoading(true);
 
     // Making the API CALL request and dealing with results
     try {
-      const response = await registerTanksApi(tank);
+      const response = await updateTanksApi(tank, id);
 
       if (response.success) {
         setTimeout(() => {
           toast.success(response.message);
         }, 500);
+        reset({
+          quantity: "", // You can reset to empty or to initial props if needed
+          description: "",
+        });
       } else {
         setTimeout(() => {
           console.log(response);
@@ -78,29 +154,20 @@ function Tanks() {
     setLoading(false);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await getTanksData();
-      setTanks(data.data);
-    };
-    fetchData();
-  }, []);
   return (
     <section className="py-12 px-10 w-full">
       <div className="flex justify-between items-center p-4">
-        <p className="text-xl font-bold">ALL TANKS</p>
+        <p className="text-xl font-bold">Tank Level Controller</p>
         <Dialog>
           <DialogTrigger>
             <span className="bg-[#360670] text-white px-5 py-2 text-xl font-medium rounded-lg">
-              ADD New Tank
+              Refill
             </span>
           </DialogTrigger>
           <DialogContent>
             <Form>
-              <h4 className="text-center text-3xl font-medium">
-                Register New Tank
-              </h4>
-              <form onSubmit={handleSubmit(registerTank)} className="space-y-8">
+              <h4 className="text-center text-xl font-medium">Refill Tank</h4>
+              <form onSubmit={handleSubmit(updateTank)} className="space-y-8">
                 <FormItem>
                   <FormControl>
                     <Input
@@ -108,7 +175,7 @@ function Tanks() {
                       placeholder="Enter Amount..."
                     />
                   </FormControl>
-                  {errors.quantity && (
+                  {errors.fullname && (
                     <p className="text-red-600">{errors.quantity.message}</p>
                   )}
                 </FormItem>
@@ -119,11 +186,13 @@ function Tanks() {
                       placeholder="Description..."
                     />
                   </FormControl>
-                  {errors.description && (
+                  {errors.username && (
                     <p className="text-red-600">{errors.description.message}</p>
                   )}
                 </FormItem>
-                <Button type="submit">ADD</Button>
+                <div className="text-center">
+                  <Button type="submit ">Refill</Button>
+                </div>
               </form>
             </Form>
           </DialogContent>

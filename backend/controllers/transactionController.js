@@ -102,6 +102,16 @@ export const addTransaction = async (req, res) => {
       },
     });
 
+    const logs = await prisma.logs.create({
+      data: {
+        type: "Transaction Type",
+        note: `Added Transaction With of (${parseFloat(litre) * 0.001}) Litre. `,
+        userId: userId,
+      },
+    });
+    // (
+    //   insert into logs("Transaction Type","Added Transaction With of (Litre)","Active User's Id")
+    // )
     await prisma.milkTank.update({
       where: { id: milkTankId },
       data: { quantity: milkTank.quantity - litre },
@@ -109,6 +119,7 @@ export const addTransaction = async (req, res) => {
     res.status(200).send({
       success: true,
       message: "Transaction Completed Successfully",
+      logs: logs,
     });
   } catch (error) {
     res.status(401).send({
@@ -325,9 +336,6 @@ export const transactionsByDays = async (req, res) => {
       include: {
         user: true,
       },
-      where: {
-        userId: parseInt(req.params.id),
-      },
     });
 
     // Grouping transactions by user and date
@@ -414,6 +422,7 @@ export const transactionsByWeekly = async (req, res) => {
         createdAt: {
           gte: new Date(last7Days[6].date + "T00:00:00.000Z"),
         },
+        userId: parseInt(req.params.id),
       },
       include: {
         user: true,
@@ -431,8 +440,6 @@ export const transactionsByWeekly = async (req, res) => {
         groupedData[date].noOfTransactions += 1;
       }
     });
-
-    
 
     res.status(200).send({
       success: true,

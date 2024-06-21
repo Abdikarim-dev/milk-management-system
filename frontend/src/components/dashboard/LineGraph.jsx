@@ -75,11 +75,11 @@ function LineChart(props) {
   const [data, setData] = useState({});
   useEffect(() => {
     const fetchData = async () => {
-      const response = await await transactionWeeklyReport();
+      const response = await await transactionWeeklyReport(props?.id);
       // setData();
 
       setData(response?.message);
-      console.log(response)
+      console.log(response);
 
       // response?.message?.map((el) => console.log(el));
     };
@@ -103,7 +103,14 @@ function LineChart(props) {
     // Access the name property and push it to the namesArray
     bgColor.push(getRandomColor());
   }
-  console.log(bgColor);
+
+  // const transactions = [400,200,100,10,300,0,50]
+  // const colors = [red,green,blue,yellow,green,navy,blue]
+
+  const total = transactions.map(
+    (elem, i) => (bgColor[i] = elem === 0 ? "red" : bgColor[i])
+  );
+  // console.log(total)
 
   const lineChartData = {
     labels: days,
@@ -112,20 +119,22 @@ function LineChart(props) {
         label: "Weekly Transactions",
         data: transactions,
         backgroundColor: bgColor,
-        borderColor: "green",
+        borderColor: "navy",
         borderWidth: 2,
         borderDash: [2, 5], // Dotted line
-        // fill: [true,false],
+        pointRadius: 10, // This sets the radius of the dots
+        pointHoverRadius: 15, // This sets the radius of the dots when hovered
+        fill: true,
         // borderColor: "#007bff", // Border color
         // borderWidth: 2, // Border width
-        // borderCapStyle: "round", // Cap style of the line
+        borderCapStyle: "round", // Cap style of the line
         // borderDash: [5, 5], // Length and spacing of dashes
-        // borderDashOffset: 0, // Offset for line dashes
-        // borderJoinStyle: "miter", // Line joint style
+        borderDashOffset: 0, // Offset for line dashes
+        borderJoinStyle: "miter", // Line joint style
         // fill: true, // Fill the area under the line
-        // tension: 0.4, // Bezier curve tension of the line
-        // showLine: true, // Whether to draw the line
-        // spanGaps: true, // Whether to draw lines between points with null data
+        tension: 0.4, // Bezier curve tension of the line
+        showLine: true, // Whether to draw the line
+        spanGaps: true, // Whether to draw lines between points with null data
       },
     ],
   };

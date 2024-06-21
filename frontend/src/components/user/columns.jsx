@@ -154,9 +154,9 @@ export const columns = [
             <DropdownMenuSeparator />
 
             <div className="flex flex-col gap-2 p-2 text-sm font-semibold">
-              <p onClick={() => navigator.clipboard.writeText(user.id)}>
+              {/* <p onClick={() => navigator.clipboard.writeText(user.id)}>
                 <ChangeUserPassword user={user} />
-              </p>
+              </p> */}
               <p>
                 <UpdateUser user={user} />
               </p>

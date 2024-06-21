@@ -6,7 +6,7 @@ const transactionRouter = express.Router();
 transactionRouter.get('/get-transactions',authenticate,getTransactions);
 transactionRouter.get('/get-transactions-by-days/:id',authenticate,transactionsByDays);
 transactionRouter.get('/get-transactions-by-daily',authenticate,transactionsByDaily);
-transactionRouter.get('/get-transactions-by-weekly',authenticate,transactionsByWeekly);
+transactionRouter.get('/get-transactions-by-weekly/:id',authenticate,transactionsByWeekly);
 transactionRouter.get('/get-transactions-by-monthly/:id',authenticate,transactionsByMonthly);
 transactionRouter.get('/get-transactions-by-active-user/:id',authenticate,getActiveUserTransactions);
 transactionRouter.get('/get-transactions-by-each-user',getEachTransactionsUser);

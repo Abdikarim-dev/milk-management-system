@@ -70,6 +70,7 @@ export const addUser = async (req, res) => {
     const { password: _, ...userData } = addUser;
     return res.status(200).send({
       success: true,
+      image: result?.url,
       message: "User Registered Successfully!",
     });
   } catch (error) {
@@ -229,6 +230,7 @@ export const removeUser = async (req, res) => {
 export const loginUser = async (req, res) => {
   try {
     const { username, password } = req.body;
+    console.log(username)
     const isUsernameExist = await prisma.user.findUnique({
       where: {
         username: username,
@@ -278,7 +280,7 @@ export const loginUser = async (req, res) => {
   } catch (error) {
     res.status(400).send({
       success: false,
-      message: "An error occured : " + error,
+      message: "An error occured at login controller : " + error,
     });
   }
 };

@@ -1,4 +1,3 @@
-import { useSelector } from "react-redux";
 import { axiosInistance } from ".";
 
 export const dailyReport = async () => {
@@ -35,7 +34,10 @@ export const customReport = async (payload) => {
 };
 export const transactionWeeklyReport = async (payload) => {
   try {
-    const response = await axiosInistance.get(`/api/transaction/get-transactions-by-weekly/${payload}`);
+    const response = await axiosInistance.get(
+      `/api/transaction/get-transactions-by-weekly/${payload}`
+    );
+    // console.log(response.data)
     return response.data;
   } catch (error) {
     return error.response.data;

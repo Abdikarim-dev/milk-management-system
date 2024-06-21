@@ -34,7 +34,7 @@ function Reports() {
     { id: 1, type: "Daily", isSelected: false },
     { id: 2, type: "Weekly", isSelected: false },
     { id: 3, type: "Monthly", isSelected: true },
-    { id: 4, type: "Custom Date", isSelected: false },
+    { id: 4, type: "Custom", isSelected: false },
   ]);
 
   const callApiAfterChange = (state) => {
@@ -43,8 +43,9 @@ function Reports() {
         {
           const fetchData = async () => {
             const data = await dailyReport();
-            setData(data?.transactions);
+            setData(data?.fullInfo);
             setTitle(reports[0].type);
+            setTotal(data?.totals);
           };
           fetchData();
           setCustom(false);
@@ -54,8 +55,9 @@ function Reports() {
         {
           const fetchData = async () => {
             const data = await weeklyReport();
-            setData(data?.transactions);
+            setData(data?.fullInfo);
             setTitle(reports[1].type);
+            setTotal(data?.totals);
           };
           fetchData();
           setCustom(false);
@@ -65,8 +67,9 @@ function Reports() {
         {
           const fetchData = async () => {
             const data = await monthlyReport();
-            setData(data?.transactions);
+            setData(data?.fullInfo);
             setTitle(reports[2].type);
+            setTotal(data?.totals);
           };
           fetchData();
           setCustom(false);
@@ -102,8 +105,10 @@ function Reports() {
   useEffect(() => {
     const fetchData = async () => {
       const data = await monthlyReport();
-      setData(data?.transactions);
-      setTotal(data?.fullInfo);
+      setData(data?.fullInfo);
+      console.log(data?.totals);
+      setTotal(data?.totals);
+      setTitle(reports[2].type);
     };
     fetchData();
   }, []);
@@ -134,44 +139,46 @@ function Reports() {
   };
   return (
     <section className="py-12 px-10 w-full">
-      <div>
-        <p className="text-3xl font-bold pb-10">{title} REPORT</p>
-      </div>
-      <div className="flex items-center gap-4 pb-4">
+      <div className="flex items-center justify-between pb-4">
         {/* DROP DOWN FOR COLUMN FILTERING */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="">
-              Choose Report Type <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {reports.map((value) => {
-              return (
-                <DropdownMenuCheckboxItem
-                  key={value.id}
-                  className="capitalize"
-                  checked={value.isSelected}
-                  onClick={() => {
-                    handleChange(value.id);
-                  }}
-                >
-                  {value.type}
-                </DropdownMenuCheckboxItem>
-              );
-            })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div>
+          <p className="text-3xl font-bold">{title} REPORT</p>
+        </div>
+        <div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="">
+                Choose Report Type <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {reports.map((value) => {
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={value.id}
+                    className="capitalize"
+                    checked={value.isSelected}
+                    onClick={() => {
+                      handleChange(value.id);
+                    }}
+                  >
+                    {value.type}
+                  </DropdownMenuCheckboxItem>
+                );
+              })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+          {/* <button onClick={() => handlePrint()}>Print</button> */}
+        </div>
         {custom && <CustomReport setData={setData} setTotal={setTotal} />}
-        <button onClick={handlePrint}>Print</button>
       </div>
       {/* TABLE */}
-      <div ref={downloadPdf}>
-        <DataTable columns={columns} data={data} />
+      <div ref={componentRef}>
+        <DataTable columns={columns} data={data} totals={total} />
       </div>
-      <div>
-        <Preview ref={componentRef} data={data} />
-      </div>
+      {/* <div>
+        <Preview ref={componentRef} data={data} totals={total} />
+      </div> */}
     </section>
   );
 }

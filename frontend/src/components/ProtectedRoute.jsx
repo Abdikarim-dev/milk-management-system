@@ -29,16 +29,16 @@ function ProtectedRoute({ children }) {
   //   if (!token) navigate("/login");
   // }, [ navigate]);
 
-  // if (!localStorage.getItem("token")) return null;
-
   useEffect(() => {
     if (!localStorage.getItem("token")) {
-      deleteActiveUser()
+      deleteActiveUser();
       navigate("/login");
     } else {
       getData();
     }
   }, [navigate]);
+  // if (!localStorage.getItem("token")) return null;
+
   // if (!localStorage.getItem("token")) {
   //   return null;
   // }

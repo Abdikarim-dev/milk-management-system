@@ -42,8 +42,7 @@ import { Button } from "../ui/button";
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 
-function DataTable({ columns, data }) {
-  
+function DataTable({ columns, data, totals }) {
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
   const [columnVisibility, setColumnVisibility] = useState({});
@@ -76,7 +75,7 @@ function DataTable({ columns, data }) {
 
   return (
     <div className="rounded-md border">
-      <div className="flex items-center px-4 py-4">
+      <div className="flex items-center ">
         {/* INPUT FOR FILTERING */}
         {/* <Input
           placeholder="Filter By Full Name..."
@@ -86,7 +85,6 @@ function DataTable({ columns, data }) {
           }
           className="max-w-sm"
         /> */}
-        
       </div>
       {/* TABLE */}
       <div>
@@ -95,7 +93,10 @@ function DataTable({ columns, data }) {
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead
+                    className="bg-black text-white p-4"
+                    key={header.id}
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -135,13 +136,20 @@ function DataTable({ columns, data }) {
               </TableRow>
             )}
             {/* Add the total row */}
-            <TableRow>
-              <TableCell>{10000}</TableCell>
+            <TableRow className="mb-3">
+              <TableCell></TableCell>
+              <TableCell></TableCell>
+              <TableCell className="font-bold text-xl">
+                {Number(totals[0]?.litre * 0.001).toLocaleString()} Ltr
+              </TableCell>
+              <TableCell className="font-bold text-xl">
+                ${totals[1]?.price.toLocaleString()}
+              </TableCell>
             </TableRow>
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-between px-2">
+      {/* <div className="flex items-center justify-between px-2">
         <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
@@ -212,7 +220,7 @@ function DataTable({ columns, data }) {
             </Button>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
