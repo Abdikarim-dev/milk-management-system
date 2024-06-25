@@ -59,7 +59,7 @@ function UsersLogs() {
           const fetchData = async () => {
             const data = await getLogs();
             setData(data?.logs);
-            setTitle(logs[2].type);
+            setTitle(logs[3].type);
           };
           fetchData();
         }

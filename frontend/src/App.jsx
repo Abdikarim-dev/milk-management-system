@@ -4,6 +4,7 @@ import SidebarRoutes from "./components/SidebarRoutes";
 import PublicRoute from "./components/PublicRoute";
 import LandingPage from "./pages/LandingPage";
 import { useSelector } from "react-redux";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   const { user } = useSelector((state) => state.user);

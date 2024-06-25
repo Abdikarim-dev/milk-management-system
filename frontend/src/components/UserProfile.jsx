@@ -80,12 +80,7 @@ function UserProfile() {
     }),
     email: z
       .string()
-      .nonempty({
-        message: "Email is a required field ,Write your email here",
-      })
-      .email({
-        message: "Please write a correct email",
-      }),
+      .email().optional(),
     phone: z.string().nonempty({
       message: "Phone is a required field ,Write your Number here",
     }),
@@ -98,10 +93,10 @@ function UserProfile() {
   } = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      fullname: user?.fullname,
-      username: user?.username,
-      email: user?.email,
-      phone: user?.phone,
+      fullname: user?.fullname || "",
+      username: user?.username || "",
+      email: user?.email || "",
+      phone: user?.phone || "",
     },
   });
 

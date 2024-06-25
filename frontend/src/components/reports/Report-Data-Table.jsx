@@ -77,14 +77,7 @@ function DataTable({ columns, data, totals }) {
     <div className="rounded-md border">
       <div className="flex items-center ">
         {/* INPUT FOR FILTERING */}
-        {/* <Input
-          placeholder="Filter By Full Name..."
-          value={table.getColumn("fullname")?.getFilterValue() ?? ""}
-          onChange={(event) =>
-            table.getColumn("fullname")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        /> */}
+       
       </div>
       {/* TABLE */}
       <div>
@@ -94,7 +87,7 @@ function DataTable({ columns, data, totals }) {
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
                   <TableHead
-                    className="bg-black text-white p-4"
+                    className="bg-dark-blue text-white p-4"
                     key={header.id}
                   >
                     {header.isPlaceholder
@@ -140,10 +133,10 @@ function DataTable({ columns, data, totals }) {
               <TableCell></TableCell>
               <TableCell></TableCell>
               <TableCell className="font-bold text-xl">
-                {Number(totals[0]?.litre * 0.001).toLocaleString()} Ltr
+                {Number(totals[0]?.litre * 0.001).toLocaleString() || ''} Ltr
               </TableCell>
               <TableCell className="font-bold text-xl">
-                ${totals[1]?.price.toLocaleString()}
+                ${totals[1]?.price?.toLocaleString() || ''}
               </TableCell>
             </TableRow>
           </TableBody>

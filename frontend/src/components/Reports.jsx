@@ -24,6 +24,7 @@ import { useReactToPrint } from "react-to-print";
 import Preview from "./reports/Preview";
 
 function Reports() {
+  const [isVisible, setIsVisible] = useState(false);
   const componentRef = useRef();
   const pdfRef = useRef();
   const [data, setData] = useState([]);
@@ -176,9 +177,21 @@ function Reports() {
       <div ref={componentRef}>
         <DataTable columns={columns} data={data} totals={total} />
       </div>
-      {/* <div>
-        <Preview ref={componentRef} data={data} totals={total} />
-      </div> */}
+      <div
+        style={{
+          visibility: isVisible ? "visible" : "hidden",
+          height: isVisible ? "auto" : 0,
+          overflow: isVisible ? "visible" : "hidden",
+        }}
+      >
+        <Preview
+          columns={columns}
+          ref={componentRef}
+          data={data}
+          totals={total}
+          title={title}
+        />
+      </div>
     </section>
   );
 }

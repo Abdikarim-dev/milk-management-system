@@ -9,7 +9,7 @@ import {
   registerActiveUser,
 } from "@/apicalls/users";
 
-import { Form, FormControl, FormItem } from "@/components/ui/form";
+import { Form, FormControl, FormItem, FormLabel } from "@/components/ui/form";
 
 import { Input } from "@/components/ui/input";
 
@@ -94,10 +94,10 @@ function Login() {
 
   return (
     <div className="h-screen flex justify-between">
-      <div className="bg-[#1b265b] w-1/2 flex justify-center items-center">
+      <div className="bg-[#1b265b] w-1/2 hidden sm:flex justify-center items-center">
         <img src="./ishub.png" alt="" />
       </div>
-      <div className="w-1/2 flex justify-center items-center">
+      <div className="w-full sm:w-1/2 flex justify-center items-center">
         {/*
       This example requires updating your template:
 
@@ -108,11 +108,14 @@ function Login() {
     */}
         <div className=" flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 ">
           <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-            {/* <img
-            className=""
-            src="ishub logo.png"
-            alt="Your Company"
-          /> */}
+            {/* <div className="flex items-center justify-start">
+              <img
+                className="w-16 h-16 mx-auto"
+                src="android-chrome-512x512.png"
+                alt="Your Company"
+              />
+              <span>Iishub Caano</span>
+            </div> */}
             <h2 className="mt-10 text-center text-4xl font-bold leading-9 tracking-tight text-gray-900">
               Welcome Back!
             </h2>
@@ -127,12 +130,15 @@ function Login() {
                 onSubmit={handleSubmit(handleLogin)}
               >
                 <FormItem>
+                  <div className="mb-2">
+                    <FormLabel>Username</FormLabel>
+                  </div>
                   <FormControl>
                     <Input
                       className="text-base"
                       {...register("username")}
                       type="text"
-                      placeholder="Username"
+                      placeholder="e.g. John Doe"
                     />
                   </FormControl>
                   {errors.username && (
@@ -142,12 +148,15 @@ function Login() {
                   )}
                 </FormItem>
                 <FormItem>
+                  <div className="mb-2">
+                    <FormLabel className="my-2">Password</FormLabel>
+                  </div>
                   <FormControl>
                     <Input
                       className="text-base"
                       {...register("password")}
                       type="password"
-                      placeholder="Password"
+                      placeholder="****"
                     />
                   </FormControl>
                   {errors.password && (

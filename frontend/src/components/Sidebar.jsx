@@ -49,7 +49,7 @@ function Sidebar({ children }) {
             <img className="rounded-full w-full h-full" src={user?.image} alt="" />
           </div>
           <h4 className="text-xl font-semibold">{user?.username}</h4>
-          <h4 className="font-extralight">{user?.userType}</h4>
+          <h4 className="font-light text-gray-600">{user?.userType === "admin" ? user?.userType :"Normal "+  user?.userType }</h4>
         </div>
 
         <SidebarContext.Provider value={{ expanded }}>
