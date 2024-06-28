@@ -85,7 +85,7 @@ function DataTable({ columns, data }) {
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead className="bg-dark-blue text-white" key={header.id}>
                     {header.isPlaceholder
                       ? null
                       : flexRender(

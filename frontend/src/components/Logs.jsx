@@ -88,7 +88,7 @@ function UsersLogs() {
     fetchData();
   }, []);
   return (
-    <section className="py-12 px-10 w-full">
+    <section className="py-4 px-10 w-full">
       <div className="flex  justify-between pb-4">
         <div className="flex items-center">
           <span className="text-3xl font-bold">System Activities</span>

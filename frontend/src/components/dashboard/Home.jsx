@@ -1,5 +1,6 @@
 import { useSelector } from "react-redux";
 import Sidebar, { SidebarItem } from "../Sidebar";
+import { useMediaQuery } from "usehooks-ts";
 
 const adminSidebar = [
   {
@@ -69,22 +70,29 @@ const userSidebar = [
 
 function Home({ children }) {
   const { user } = useSelector((state) => state?.user);
+  const isDesktop = useMediaQuery("(min-width:1080px)");
 
   const sidebarItems = user?.userType === "admin" ? adminSidebar : userSidebar;
 
   return (
     <div className="flex ">
-      <Sidebar>
-        {sidebarItems.map((sidebar) => (
-          <SidebarItem
-            key={sidebar.route}
-            icon={sidebar.icon}
-            text={sidebar.text}
-            route={sidebar.route}
-          ></SidebarItem>
-        ))}
-      </Sidebar>
-      <div className="w-full ml-[300px]">{children}</div>
+      {isDesktop ? (
+        <Sidebar>
+          {sidebarItems.map((sidebar) => (
+            <SidebarItem
+              key={sidebar.route}
+              icon={sidebar.icon}
+              text={sidebar.text}
+              route={sidebar.route}
+            ></SidebarItem>
+          ))}
+        </Sidebar>
+      ) : (
+        <>Mobile</>
+      )}
+      <div className={`w-full ${isDesktop ? "ml-[300px]" : "ml-0"}`}>
+        {children}
+      </div>
     </div>
   );
 }

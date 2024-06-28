@@ -6,13 +6,9 @@ import { getUserData, registerUserApi } from "./../apicalls/users.js";
 import { Listbox, Transition } from "@headlessui/react";
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
+import { CheckIcon, ChevronsUpDownIcon, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormItem,
-} from "@/components/ui/form";
+import { Form, FormControl, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -100,7 +96,7 @@ function Users() {
   const {
     register,
     handleSubmit,
-
+    reset,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(formSchema),
@@ -134,11 +130,11 @@ function Users() {
       if (response.success) {
         setTimeout(() => {
           toast.success(response.message);
-          
+          reset();
         }, 500);
       } else {
         setTimeout(() => {
-          console.log(response)
+          console.log(response);
           toast.error(response.message);
         }, 500);
       }
@@ -147,7 +143,7 @@ function Users() {
       console.log(error.message);
       toast.error("AN ERROR OCCURED PLEASE TRY AGAIN!");
     }
-    setLoading(false)
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -158,14 +154,20 @@ function Users() {
     fetchData();
   }, []);
   return (
-    <section className="py-12 px-10 w-full">
-      <div className="flex justify-between items-center p-4">
-        <p className="text-xl font-bold">ALL USERS</p>
+    <section className="py-4 px-10 w-full">
+      <div className="flex justify-between items-center pb-2">
+        <div className="flex items-center">
+          <span className="text-3xl font-bold">Users</span>
+        </div>
         <Dialog>
           <DialogTrigger>
-            <span className="bg-[#360670] text-white px-5 py-2 text-xl font-medium rounded-lg">
+            {/* <span className="bg-[#360670] text-white px-5 py-2 text-xl font-medium rounded-lg">
               ADD USER
-            </span>
+            </span> */}
+            <div className="bg-dark-blue text-white rounded-full p-2 flex items-center gap-2 px-4 text-xl font-semibold">
+              <UserPlus />
+              Add
+            </div>
           </DialogTrigger>
           <DialogContent>
             <Form>

@@ -77,13 +77,13 @@ function DataTable({ columns, data }) {
 
   return (
     <div className="rounded-md border">
-      <div className="flex items-center px-4 py-4">
+      <div className="flex items-center px-4 py-4 bg-dark-blue">
         {/* INPUT FOR FILTERING */}
         {/* <Input
-          placeholder="Filter By Full Name..."
-          value={table.getColumn("fullname")?.getFilterValue() ?? ""}
+          placeholder="Filter By Price..."
+          value={table.getColumn("price")?.getFilterValue() ?? ""}
           onChange={(event) =>
-            table.getColumn("fullname")?.setFilterValue(event.target.value)
+            table.getColumn("price")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         /> */}
@@ -121,9 +121,9 @@ function DataTable({ columns, data }) {
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow  key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead className="bg-dark-blue text-white" key={header.id}>
                     {header.isPlaceholder
                       ? null
                       : flexRender(

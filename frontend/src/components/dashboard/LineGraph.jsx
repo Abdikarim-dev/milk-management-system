@@ -31,6 +31,9 @@ let options = {
       position: "top",
       display: false,
     },
+    filler: {
+      propagate: true,
+    },
     title: {
       display: true,
       text: "OVERVIEW PERFORMANCE",
@@ -62,7 +65,7 @@ let options = {
 };
 
 // Adjust the size of the chart
-const chartHeight = 400; // Set the desired height
+const chartHeight = 530; // Set the desired height
 const chartWidth = 600; // Set the desired width
 
 function LineChart(props) {
@@ -79,7 +82,6 @@ function LineChart(props) {
       // setData();
 
       setData(response?.message);
-      console.log(response);
 
       // response?.message?.map((el) => console.log(el));
     };

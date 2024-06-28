@@ -160,8 +160,6 @@ function TopSales({ id }) {
     const fetchData = async () => {
       const response = await getTransactionsByUser(id);
 
-      console.log(response)
-
       processTransactions(response);
       // Function to reformat the array excluding specific properties
       // const reformattedData = response?.map(

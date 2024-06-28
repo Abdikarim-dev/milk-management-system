@@ -46,7 +46,7 @@ function BarGraph() {
     },
   };
   return (
-    <div className="w-full lg:w-2/3 h-[450px] border border-[#E4E4E7] rounded-lg px-4 py-5 ">
+    <div className="w-full lg:w-2/3 h-[550px] border border-[#E4E4E7] rounded-lg px-4 py-5 ">
       <Bar options={options} data={chartData} />
     </div>
   );

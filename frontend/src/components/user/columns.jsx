@@ -1,5 +1,10 @@
 "use client";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import {
+  ArrowUpDown,
+  MoreHorizontal,
+  UserRoundCheck,
+  UserRoundX,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 import {
@@ -14,68 +19,34 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import UpdateUser from "./UpdateUser";
 import DeleteUser from "./DeleteUser";
-import ChangeUserPassword from "./ChangeUserPassword";
-
-const sex = [
-  {
-    id: 1,
-    name: "Select Sex",
-  },
-  {
-    id: 2,
-    name: "Male",
-    avatar:
-      "https://img.freepik.com/free-photo/3d-illustration-young-man-white-shirt-tie-with-glasses_1142-43199.jpg?t=st=1715407192~exp=1715410792~hmac=b20261ab39f9f7e802c0cf3a1c0a5824701b95a68cab3ebb759902f60590c4d8&w=740",
-  },
-  {
-    id: 3,
-    name: "Female",
-    avatar:
-      "https://img.freepik.com/free-psd/3d-render-avatar-character_23-2150611759.jpg?t=st=1715407545~exp=1715411145~hmac=d3644d1e8a07ae9ddddc2ce0198553f2cbc565e422f8a1f577f896cc1f5cc03d&w=740",
-  },
-];
-const user = [
-  {
-    id: 1,
-    name: "Select User Type",
-  },
-  {
-    id: 2,
-    name: "Admin",
-  },
-  {
-    id: 3,
-    name: "User",
-  },
-];
 
 export const columns = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "id",
-    header: "ID",
-  },
+  // {
+  //   id: "select",
+  //   header: ({ table }) => (
+  //     <Checkbox
+  //       checked={
+  //         table.getIsAllPageRowsSelected() ||
+  //         (table.getIsSomePageRowsSelected() && "indeterminate")
+  //       }
+  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+  //       aria-label="Select all"
+  //     />
+  //   ),
+  //   cell: ({ row }) => (
+  //     <Checkbox
+  //       checked={row.getIsSelected()}
+  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+  //       aria-label="Select row"
+  //     />
+  //   ),
+  //   enableSorting: false,
+  //   enableHiding: false,
+  // },
+  // {
+  //   accessorKey: "id",
+  //   header: "ID",
+  // },
   {
     accessorKey: "fullname",
     header: ({ column }) => {
@@ -84,7 +55,7 @@ export const columns = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          FullName
+          <div className="font-bold text-lg">Full Name</div>
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -98,7 +69,7 @@ export const columns = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Username
+          <div className="font-bold text-lg">User Name</div>
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -112,7 +83,7 @@ export const columns = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Email
+          <span className="font-bold text-lg">Email</span>
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -120,20 +91,69 @@ export const columns = [
   },
   {
     accessorKey: "phone",
-    header: "Phone",
+    header: () => <div className="font-bold text-lg">Phone Number</div>,
   },
   {
     accessorKey: "sex",
-    header: "Sex",
+    header: () => <div className="font-bold text-lg">Sex</div>,
   },
   {
     accessorKey: "createdAt",
-    header: "Created At",
+    header: () => <div className="font-bold text-lg">Created Time</div>,
     cell: ({ row }) => {
       const date = new Date(row.getValue("createdAt"));
       const formatted = date.toLocaleDateString();
 
       return <div className="font-medium">{formatted}</div>;
+    },
+  },
+  {
+    accessorKey: "status",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <div className="font-bold text-lg">Status</div>
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: (row) => {
+      const cell = row.getValue("status");
+      let status = {};
+      cell === "active"
+        ? (status = {
+            isActive: true,
+            icon: UserRoundCheck,
+            text: "Active",
+          })
+        : (status = {
+            isActive: false,
+            icon: UserRoundX,
+            text: "In Active",
+          });
+
+      return (
+        <div className={`font-semibold `}>
+          {status.isActive ? (
+            <div className="flex items-center gap-2">
+              <span className="bg-green-500 text-white rounded-full p-1 font-black">
+                <status.icon />
+              </span>
+              <span className="text-green-500">{status.text}</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <span className="bg-red-500 text-white rounded-full p-1 font-black">
+                <status.icon />
+              </span>
+              <span className="text-red-500">{status.text}</span>
+            </div>
+          )}
+        </div>
+      );
     },
   },
   {

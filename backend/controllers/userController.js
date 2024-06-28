@@ -20,13 +20,24 @@ export const getUsers = async (req, res) => {
 export const addUser = async (req, res) => {
   try {
     // Extract password and other data from request body
-    const { userId, password, email, image, username, ...otherData } = req.body;
+    const { userId, password, email, phone, image, username, ...otherData } =
+      req.body;
 
     const isEmailOrUserExist = await prisma.user.findFirst({
       where: {
         OR: [{ email: email }, { username: username }],
       },
     });
+    const isPhoneExist = await prisma.user.findFirst({
+      where: {
+        phone: phone,
+      },
+    });
+    if (isPhoneExist?.phone === phone)
+      return res.status(200).send({
+        success: false,
+        message: "Phone Number already exists!",
+      });
     if (isEmailOrUserExist?.username === username)
       return res.status(200).send({
         success: false,
@@ -61,6 +72,7 @@ export const addUser = async (req, res) => {
         ...otherData,
         username,
         email,
+        phone,
         password: hashedPassword, // Use the hashed password instead of the plain one
         image: result?.url,
       },
@@ -83,9 +95,12 @@ export const addUser = async (req, res) => {
 export const activeUser = async (req, res) => {
   try {
     // Extract password and other data from request body
-
+    const { id } = req.params;
     const user = await prisma.activeUser.create({
-      data: req.body,
+      data: {
+        id: 1,
+        userId: parseInt(id),
+      },
     });
 
     return res.status(200).send({
@@ -213,12 +228,13 @@ export const editUser = async (req, res) => {
 export const removeUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const removeUser = await prisma.user.delete({
-      where: { id: parseInt(id) },
-    });
+
+    await prisma.transaction.deleteMany({ where: { userId: parseInt(id) } });
+    await prisma.logs.deleteMany({ where: { userId: parseInt(id) } });
+    await prisma.user.delete({ where: { id: parseInt(id) } });
     res.status(200).send({
       success: true,
-      message: "User Has been deleted successfully!",
+      message: "User & its transactions Has been deleted successfully!",
     });
   } catch (error) {
     res.status(400).send({
@@ -230,52 +246,69 @@ export const removeUser = async (req, res) => {
 export const loginUser = async (req, res) => {
   try {
     const { username, password } = req.body;
-    console.log(username)
+    console.log(username);
     const isUsernameExist = await prisma.user.findUnique({
       where: {
         username: username,
       },
     });
-    if (!isUsernameExist)
+
+    if (isUsernameExist) {
+      if (
+        isUsernameExist.status === "inActive" ||
+        isUsernameExist.status === "suspended"
+      ) {
+        if (isUsernameExist.status === "inActive")
+          return res.status(200).send({
+            success: false,
+            message: "You're temporarily in Active, please contact your superior!",
+          });
+        else
+          return res.status(200).send({
+            success: false,
+            message: "You're suspended, please contact your superior!",
+          });
+      } else {
+        const passwordMatched = await bcrypt.compare(
+          password,
+          isUsernameExist.password
+        );
+
+        if (passwordMatched) {
+          const dataToBeSendToFrontend = {
+            _id: isUsernameExist.id,
+          };
+          const expiresIn = 7 * 24 * 60 * 60;
+          const token = jwt.sign(dataToBeSendToFrontend, JWT_SECRET, {
+            expiresIn,
+          });
+
+          res.cookie("token", token, {
+            httpOnly: true,
+            secure: true,
+            maxAge: expiresIn * 1000,
+          });
+
+          isUsernameExist.password = undefined;
+
+          res.status(200).send({
+            success: true,
+            username: isUsernameExist,
+            expiresIn,
+            token,
+          });
+        } else {
+          return res.status(200).send({
+            success: false,
+            message: "Incorrect Password, Please try again!",
+          });
+        }
+      }
+    } else {
       return res.status(200).send({
         success: false,
         message: "Username is not exist!, please create an account!",
       });
-    else {
-      const passwordMatched = await bcrypt.compare(
-        password,
-        isUsernameExist.password
-      );
-
-      if (passwordMatched) {
-        const dataToBeSendToFrontend = {
-          _id: isUsernameExist.id,
-        };
-        const expiresIn = 7 * 24 * 60 * 60;
-        const token = jwt.sign(dataToBeSendToFrontend, JWT_SECRET, {
-          expiresIn,
-        });
-
-        res.cookie("token", token, {
-          httpOnly: true,
-          secure: true,
-          maxAge: expiresIn * 1000,
-        });
-
-        isUsernameExist.password = undefined;
-
-        res.status(200).send({
-          success: true,
-          username: isUsernameExist,
-          expiresIn,
-          token,
-        });
-      } else {
-        return res.status(200).send({
-          success: false,
-          message: "Incorrect Password, Please try again!",
-        });
-      }
     }
   } catch (error) {
     res.status(400).send({

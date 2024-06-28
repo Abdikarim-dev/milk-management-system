@@ -19,6 +19,7 @@ model User {
   image       String?
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
+  status      Status        @default(active)
   Transaction Transaction[]
   activeUsers ActiveUser[]
   Logs        Logs[]
@@ -75,4 +76,10 @@ enum MaritalStatus {
 enum UserType {
   admin
   user
+}
+
+enum Status {
+  active
+  inActive
+  suspended
 }

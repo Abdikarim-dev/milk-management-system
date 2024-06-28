@@ -139,11 +139,11 @@ function Reports() {
     });
   };
   return (
-    <section className="py-12 px-10 w-full">
+    <section className="py-4 px-10 w-full">
       <div className="flex items-center justify-between pb-4">
         {/* DROP DOWN FOR COLUMN FILTERING */}
-        <div>
-          <p className="text-3xl font-bold">{title} REPORT</p>
+        <div className="flex items-center">
+          <span className="text-3xl font-bold">{title} Report</span>
         </div>
         <div>
           <DropdownMenu>

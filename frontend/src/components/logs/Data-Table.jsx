@@ -70,7 +70,7 @@ function DataTable({ columns, data }) {
 
   return (
     <div className="rounded-md border bg-slate-50">
-      <div className="flex items-center px-4 py-4">
+      <div className="flex items-center px-4 py-4 bg-dark-blue">
         {/* INPUT FOR FILTERING */}
         <Input
           placeholder="Filtering using type..."
@@ -89,7 +89,7 @@ function DataTable({ columns, data }) {
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead className="bg-dark-blue text-white" key={header.id}>
                     {header.isPlaceholder
                       ? null
                       : flexRender(

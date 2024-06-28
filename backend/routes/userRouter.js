@@ -21,7 +21,7 @@ userRouter.get("/get-users", authenticate, getUsers);
 userRouter.get("/get-user-info", authenticate, getUserInfo);
 // userRouter.get("/get-user-info",authenticate, getUserInfo);
 userRouter.post("/add-user", authenticate, upload.single("image"), addUser);
-userRouter.post("/active-user", activeUser);
+userRouter.post("/active-user/:id", activeUser);
 userRouter.delete("/delete-active-user", deleteActiveUser);
 userRouter.post("/add-users", authenticate, addManyUsers);
 userRouter.post(

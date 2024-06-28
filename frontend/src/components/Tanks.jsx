@@ -9,7 +9,7 @@ import {
 } from "../apicalls/tanks.js";
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
+import { CheckIcon, ChevronsUpDownIcon, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -155,14 +155,20 @@ function Tanks() {
   };
 
   return (
-    <section className="py-12 px-10 w-full">
-      <div className="flex justify-between items-center p-4">
-        <p className="text-xl font-bold">Tank Level Controller</p>
+    <section className="py-4 px-10 w-full">
+      <div className="flex justify-between items-center pb-2">
+        <div className="flex items-center">
+          <span className="text-3xl font-bold">Tank Level Controller</span>
+        </div>
         <Dialog>
           <DialogTrigger>
-            <span className="bg-[#360670] text-white px-5 py-2 text-xl font-medium rounded-lg">
+            {/* <span className="bg-[#360670] text-white px-5 py-2 text-xl font-medium rounded-lg">
               Refill
-            </span>
+            </span> */}
+            <div className="bg-dark-blue text-white rounded-full p-2 flex items-center gap-2 px-4 text-xl font-semibold">
+              <Plus />
+              Refill
+            </div>
           </DialogTrigger>
           <DialogContent>
             <Form>

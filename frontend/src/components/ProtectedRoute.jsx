@@ -10,7 +10,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 function ProtectedRoute({ children }) {
-  console.log("HERE");
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -24,7 +23,6 @@ function ProtectedRoute({ children }) {
           expiresIn: localStorage.getItem("tokenExpiration"),
           token: localStorage.getItem("token"),
         };
-        console.log(user);
         dispatch(loginUser(user));
       } else {
         toast.error(response.message);

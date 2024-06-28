@@ -40,8 +40,7 @@ export const registerUserApi = async (payload) => {
 export const registerActiveUser = async (payload) => {
   try {
     const response = await axiosInistance.post(
-      `/api/users/active-user/`,
-      payload
+      `/api/users/active-user/${payload}`,
     );
     return response.data;
   } catch (error) {

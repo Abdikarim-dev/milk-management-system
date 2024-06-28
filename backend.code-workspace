@@ -8,6 +8,7 @@
 		}
 	],
 	"settings": {
-		"codium.codeCompletion.enable": true
+		"codium.codeCompletion.enable": true,
+		"liveServer.settings.multiRootWorkspaceName": "backend"
 	}
 }

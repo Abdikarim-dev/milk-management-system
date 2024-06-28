@@ -1,5 +1,5 @@
 import { useContext, createContext, useState, useMemo } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
   BarChart3,
   Boxes,
@@ -9,8 +9,9 @@ import {
   Milk,
   Cog,
   MoreVertical,
+  LogOut,
 } from "lucide-react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const SidebarContext = createContext();
 
@@ -23,6 +24,54 @@ const icons = {
   AudioWaveform,
   Cog,
 };
+
+// import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu"
+
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { logoutUser } from "@/redux/features/userSlice";
+import toast from "react-hot-toast";
+
+// type Checked = DropdownMenuCheckboxItemProps["checked"]
+
+export function LogoutDropdownMenu() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate()
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button>
+          <MoreVertical size={20} />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56">
+        <DropdownMenuLabel>Settings</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuCheckboxItem
+          onClick={() => {
+            dispatch(logoutUser());
+            navigate("/");
+            toast.error("Logged out successfully!");
+          }}
+          className="flex items-center gap-2"
+        >
+          <span>
+            <LogOut />
+          </span>
+          <span>Logout</span>
+        </DropdownMenuCheckboxItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
 
 function Sidebar({ children }) {
   const [expanded, setExpanded] = useState(true);
@@ -46,10 +95,18 @@ function Sidebar({ children }) {
           } pb-2`}
         >
           <div className="rounded-full w-[100px] h-[100px] flex justify-center items-center">
-            <img className="rounded-full w-full h-full" src={user?.image} alt="" />
+            <img
+              className="rounded-full w-full h-full"
+              src={user?.image}
+              alt=""
+            />
           </div>
           <h4 className="text-xl font-semibold">{user?.username}</h4>
-          <h4 className="font-light text-gray-600">{user?.userType === "admin" ? user?.userType :"Normal "+  user?.userType }</h4>
+          <h4 className="font-light text-gray-600">
+            {user?.userType === "admin"
+              ? user?.userType
+              : "Normal " + user?.userType}
+          </h4>
         </div>
 
         <SidebarContext.Provider value={{ expanded }}>
@@ -71,7 +128,8 @@ function Sidebar({ children }) {
               <h4 className="font-semibold">{user?.fullname}</h4>
               <span className="text-xs text-gray-600">{user?.email}</span>
             </div>
-            <MoreVertical size={20} />
+            {/*  */}
+            <LogoutDropdownMenu />
           </div>
         </div>
       </nav>

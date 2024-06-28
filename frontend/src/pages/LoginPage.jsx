@@ -83,6 +83,8 @@ function Login() {
         token: response?.token,
       };
 
+      await registerActiveUser(user?.username?.id);
+
       dispatch(loginUser(user));
       navigate("/home");
       toast.success("LOGGED IN SUCCESSFULLY!");

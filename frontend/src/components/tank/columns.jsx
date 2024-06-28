@@ -44,16 +44,16 @@ export const columns = [
   // },
   {
     accessorKey: "desc",
-    header:"Description",
+    header: () => <div className="font-bold text-lg">Description</div>,
   },
   {
     accessorKey: "quantity",
-    header: "Quantity",
+    header: () => <div className="font-bold text-lg">Quantity</div>,
   },
 
   {
     accessorKey: "createdAt",
-    header: "Created At",
+    header: () => <div className="font-bold text-lg">Created Time</div>,
     cell: ({ row }) => {
       const date = new Date(row.getValue("createdAt"));
       const formatted = date.toLocaleDateString();
@@ -63,7 +63,7 @@ export const columns = [
   },
   {
     accessorKey: "updatedAt",
-    header: "Updated At",
+    header: () => <div className="font-bold text-lg">Updated Time</div>,
     cell: ({ row }) => {
       const date = new Date(row.getValue("createdAt"));
       const formatted = date.toLocaleDateString();
