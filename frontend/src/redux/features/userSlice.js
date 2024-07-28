@@ -14,11 +14,6 @@ const getUserFromLocalStorage = () => {
   }
 };
 
-// const initialState = {
-//   user: getUserFromLocalStorage(),
-//   tokenExpiration: localStorage.getItem("expirationTime") || null,
-// };
-
 const initialState = {
   user: null,
   token: null,

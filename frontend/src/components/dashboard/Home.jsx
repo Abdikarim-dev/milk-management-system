@@ -60,6 +60,11 @@ const userSidebar = [
     text: "Transactions",
     route: "transaction",
   },
+  {
+    icon: "Cog",
+    text: "System Activity",
+    route: "log",
+  },
 
   {
     icon: "Boxes",

@@ -10,8 +10,11 @@ import {
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
 import { ChevronDown } from "lucide-react";
+import { useSelector } from "react-redux";
 
 function UsersLogs() {
+  const { user } = useSelector((store) => store.user);
+  const username = user?.userType === "user" ? user?.username : undefined;
   const [data, setData] = useState([]);
 
   const [logs, setLogs] = useState([
@@ -27,7 +30,7 @@ function UsersLogs() {
       case 1:
         {
           const fetchData = async () => {
-            const data = await daily();
+            const data = await daily(username);
             setData(data?.logs);
             setTitle(logs[0].type);
           };
@@ -37,7 +40,7 @@ function UsersLogs() {
       case 2:
         {
           const fetchData = async () => {
-            const data = await weekly();
+            const data = await weekly(username);
             setData(data?.logs);
             setTitle(logs[1].type);
           };
@@ -47,7 +50,7 @@ function UsersLogs() {
       case 3:
         {
           const fetchData = async () => {
-            const data = await monthly();
+            const data = await monthly(username);
             setData(data?.logs);
             setTitle(logs[2].type);
           };
@@ -57,7 +60,7 @@ function UsersLogs() {
       case 4:
         {
           const fetchData = async () => {
-            const data = await getLogs();
+            const data = await getLogs(username);
             setData(data?.logs);
             setTitle(logs[3].type);
           };
@@ -82,7 +85,7 @@ function UsersLogs() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await getLogs();
+      const data = await getLogs(username);
       setData(data?.logs);
     };
     fetchData();
