@@ -23,7 +23,8 @@ module.exports = {
       },
       fontFamily: {
         'poppins':'Poppins", sans-serif',
-        'robotto':'Roboto, sans-serif'
+        'robotto':'Roboto, sans-serif',
+        'zain':'zain, san-serif'
       },
       keyframes: {
         "accordion-down": {

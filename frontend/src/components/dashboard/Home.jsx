@@ -61,6 +61,11 @@ const userSidebar = [
     route: "transaction",
   },
   {
+    icon: "AudioWaveform",
+    text: "Reports",
+    route: "reports",
+  },
+  {
     icon: "Cog",
     text: "System Activity",
     route: "log",

@@ -4,14 +4,14 @@ import DataTable from "./Report-Data-Table";
 const Preview = forwardRef((props, ref) => {
   const { data,title, totals, columns } = props;
   return (
-    <div ref={ref} className="max-w-full font-poppins">
+    <div ref={ref} className="max-w-full font-zain">
       <div className="flex items-center justify-center gap-4">
         <img
           src="./android-chrome-512x512.png"
           alt="logo"
           className="w-14 h-14"
         />
-        <h1 className="uppercase tracking-wider text-center  font-bold">
+        <h1 className="uppercase tracking-wider text-center  font-bold font-robotto">
           Ishub Caano
         </h1>
       </div>

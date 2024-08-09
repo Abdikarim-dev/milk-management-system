@@ -95,11 +95,14 @@ export const addUser = async (req, res) => {
 export const activeUser = async (req, res) => {
   try {
     // Extract password and other data from request body
-    const { id } = req.params;
+    const { id, role } = req.body;
+    const request = req.body;
+    console.log(request);
     const user = await prisma.activeUser.create({
       data: {
         id: 1,
         userId: parseInt(id),
+        role: role,
       },
     });
 
@@ -246,7 +249,6 @@ export const removeUser = async (req, res) => {
 export const loginUser = async (req, res) => {
   try {
     const { username, password } = req.body;
-    console.log(username);
     const isUsernameExist = await prisma.user.findUnique({
       where: {
         username: username,
@@ -261,7 +263,8 @@ export const loginUser = async (req, res) => {
         if (isUsernameExist.status === "inActive")
           return res.status(200).send({
             success: false,
-            message: "You're temporarily in Active, please contact your superior!",
+            message:
+              "You're temporarily in Active, please contact your superior!",
           });
         else
           return res.status(200).send({

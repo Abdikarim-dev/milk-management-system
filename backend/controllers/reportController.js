@@ -17,73 +17,69 @@ const formatDate = (date) => {
   return date.toISOString();
 };
 
-
+export const getAdminSMS = () => {};
+export const getUserSMS = () => {};
 export const getDailyReport = async (req, res) => {
   try {
     const today = new Date();
     const start = startOfDay(today);
     const end = endOfDay(today);
 
+    let userId = req.params.id; // Get userId from route parameters
+    userId = userId ? parseInt(userId) : undefined; // Convert to integer if present
+
+    // Query to get transactions either for a specific user or all users if userId is undefined
     const transactions = await prisma.transaction.findMany({
       where: {
+        userId: userId,
         createdAt: {
-          gte: add(start, { hours: 3 }),
-          lte: add(end, { hours: 3 }),
+          gte: start,
+          lte: end,
         },
+      },
+      include: {
+        user: true, // Include user details in the result
       },
     });
 
-    
+    // Aggregate results by day and user
+    let results = {};
+    transactions.forEach((transaction) => {
+      const day = transaction.createdAt.toISOString().split("T")[0];
+      const userKey = `${transaction.userId}-${day}`;
 
-    const result = await prisma.$queryRaw`
-      SELECT 
-        userId, 
-        DATE(createdAt) as day, 
-        SUM(litre) as totalLitre, 
-        SUM(price) as totalPrice 
-      FROM transaction 
-      WHERE createdAt BETWEEN ${add(start, { hours: 3 })} AND ${add(end, {
-      hours: 3,
-    })}
-        AND userId IN (SELECT id FROM user WHERE userType = 'user')
-      GROUP BY userId, DATE(createdAt)
-    `;
-
-    // Calculate total price and litre for all users
-    const totals = await prisma.$queryRaw`
-      SELECT 
-        SUM(litre) as totalLitre, 
-        SUM(price) as totalPrice 
-      FROM transaction 
-      WHERE createdAt BETWEEN ${add(start, { hours: 3 })} AND ${add(end, {
-      hours: 3,
-    })}
-        AND userId IN (SELECT id FROM user WHERE userType = 'user')
-    `;
-
-    const allUsers = await prisma.user.findMany();
-
-    // Map the result to include username from allUsers array
-    const fullInfo = result.map((transaction) => {
-      const user = allUsers.find((user) => user.id === transaction.userId);
-      return {
-        userId: transaction.userId,
-        username: user ? user.username : "Unknown",
-        fullname: user ? user.fullname : "Unknown",
-        phone: user ? user.phone : "unknown",
-        litre: Number(transaction.totalLitre),
-        price: transaction.totalPrice,
-        createdAt: transaction.day,
-      };
+      if (!results[userKey]) {
+        results[userKey] = {
+          userId: transaction.userId,
+          username: transaction.user.username,
+          fullname: transaction.user.fullname,
+          phone: transaction.user.phone,
+          litre: 0,
+          price: 0,
+          createdAt: day,
+        };
+      }
+      results[userKey].litre += parseFloat(transaction.litre);
+      results[userKey].price += transaction.price;
     });
+
+    // Convert results object to array
+    const fullInfo = Object.values(results);
+
+    // Calculate total litres and price
+    const totalLitre = transactions.reduce(
+      (sum, cur) => sum + parseFloat(cur.litre),
+      0
+    );
+    const totalPrice = transactions.reduce((sum, cur) => sum + cur.price, 0);
+
+    // Format totals as specified
+    const totals = [{ litre: totalLitre }, { price: totalPrice }];
 
     res.status(200).json({
       message: "success",
       fullInfo,
-      totals: [
-        { litre: Number(totals[0].totalLitre) },
-        { price: totals[0].totalPrice },
-      ],
+      totals,
     });
   } catch (error) {
     res.status(500).json({ message: "Error fetching daily report", error });
@@ -96,83 +92,61 @@ export const getWeeklyReport = async (req, res) => {
     const start = startOfWeek(today);
     const end = endOfWeek(today);
 
+    let userId = req.params.id; // Get userId from route parameters
+    userId = userId ? parseInt(userId) : undefined; // Convert to integer if present
+
+    // Query to get transactions either for a specific user or all users if userId is undefined
     const transactions = await prisma.transaction.findMany({
       where: {
+        userId: userId,
         createdAt: {
-          gte: add(start, { hours: 3 }),
-          lte: add(end, { hours: 3 }),
+          gte: start,
+          lte: end,
         },
+      },
+      include: {
+        user: true, // Include user details in the result
       },
     });
 
-    const result = await prisma.$queryRaw`
-      SELECT 
-        userId, 
-        DATE(createdAt) as day, 
-        SUM(litre) as totalLitre, 
-        SUM(price) as totalPrice 
-      FROM transaction 
-      WHERE createdAt BETWEEN ${add(start, { hours: 3 })} AND ${add(end, {
-      hours: 3,
-    })}
-        AND userId IN (SELECT id FROM user WHERE userType = 'user')
-      GROUP BY userId, DATE(createdAt)
-      ORDER BY DATE(createdAt)
-    `;
+    // Aggregate results by day and user
+    let results = {};
+    transactions.forEach((transaction) => {
+      const day = transaction.createdAt.toISOString().split("T")[0];
+      const userKey = `${transaction.userId}-${day}`;
 
-    // Calculate total price and litre for all users
-    const totals = await prisma.$queryRaw`
-      SELECT 
-        SUM(litre) as totalLitre, 
-        SUM(price) as totalPrice 
-      FROM transaction 
-      WHERE createdAt BETWEEN ${add(start, { hours: 3 })} AND ${add(end, {
-      hours: 3,
-    })}
-        AND userId IN (SELECT id FROM user WHERE userType = 'user')
-    `;
-
-    // const result = await prisma.transaction.groupBy({
-    //   by: ["userId"],
-
-    //   where: {
-    //     user: {
-    //       userType: "user",
-    //     },
-    //     createdAt: {
-    //       gte: add(start, { hours: 3 }),
-    //       lte: add(end, { hours: 3 }),
-    //     },
-    //   },
-    //   _sum: {
-    //     litre: true,
-    //     price: true,
-    //   },
-    // });
-
-    const allUsers = await prisma.user.findMany();
-
-    // Map the result to include username from allUsers array
-    const fullInfo = result.map((transaction) => {
-      const user = allUsers.find((user) => user.id === transaction.userId);
-      return {
-        userId: transaction.userId,
-        username: user ? user.username : "Unknown",
-        fullname: user ? user.fullname : "Unknown",
-        phone: user ? user.phone : "UnKnown",
-        litre: Number(transaction.totalLitre),
-        price: transaction.totalPrice,
-        createdAt: transaction.day,
-      };
+      if (!results[userKey]) {
+        results[userKey] = {
+          userId: transaction.userId,
+          username: transaction.user.username,
+          fullname: transaction.user.fullname,
+          phone: transaction.user.phone,
+          litre: 0,
+          price: 0,
+          createdAt: day,
+        };
+      }
+      results[userKey].litre += parseFloat(transaction.litre);
+      results[userKey].price += transaction.price;
     });
+
+    // Convert results object to array
+    const fullInfo = Object.values(results);
+
+    // Calculate total litres and price
+    const totalLitre = transactions.reduce(
+      (sum, cur) => sum + parseFloat(cur.litre),
+      0
+    );
+    const totalPrice = transactions.reduce((sum, cur) => sum + cur.price, 0);
+
+    // Format totals as specified
+    const totals = [{ litre: totalLitre }, { price: totalPrice }];
 
     res.status(200).json({
       message: "success",
       fullInfo,
-      totals: [
-        { litre: Number(totals[0].totalLitre) },
-        { price: totals[0].totalPrice },
-      ],
+      totals,
     });
   } catch (error) {
     res.status(500).json({ message: "Error fetching weekly report", error });
@@ -185,83 +159,61 @@ export const getMonthlyReport = async (req, res) => {
     const start = startOfMonth(today);
     const end = endOfMonth(today);
 
+    let userId = req.params.id; // Get userId from route parameters
+    userId = userId ? parseInt(userId) : undefined; // Convert to integer if present
+
+    // Query to get transactions either for a specific user or all users if userId is undefined
     const transactions = await prisma.transaction.findMany({
       where: {
+        userId: userId,
         createdAt: {
-          gte: add(start, { hours: 3 }),
-          lte: add(end, { hours: 3 }),
+          gte: start,
+          lte: end,
         },
+      },
+      include: {
+        user: true, // Include user details in the result
       },
     });
 
-    const result = await prisma.$queryRaw`
-      SELECT 
-        userId, 
-        DATE(createdAt) as day, 
-        SUM(litre) as totalLitre, 
-        SUM(price) as totalPrice 
-      FROM transaction 
-      WHERE createdAt BETWEEN ${add(start, { hours: 3 })} AND ${add(end, {
-      hours: 3,
-    })}
-        AND userId IN (SELECT id FROM user WHERE userType = 'user')
-      GROUP BY userId, DATE(createdAt)
-      ORDER BY DATE(createdAt)
-    `;
+    // Aggregate results by day and user
+    let results = {};
+    transactions.forEach((transaction) => {
+      const day = transaction.createdAt.toISOString().split("T")[0];
+      const userKey = `${transaction.userId}-${day}`;
 
-    // Calculate total price and litre for all users
-    const totals = await prisma.$queryRaw`
-      SELECT 
-        SUM(litre) as totalLitre, 
-        SUM(price) as totalPrice 
-      FROM transaction 
-      WHERE createdAt BETWEEN ${add(start, { hours: 3 })} AND ${add(end, {
-      hours: 3,
-    })}
-        AND userId IN (SELECT id FROM user WHERE userType = 'user')
-    `;
-
-    // const result = await prisma.transaction.groupBy({
-    //   by: ["userId"],
-
-    //   where: {
-    //     user: {
-    //       userType: "user",
-    //     },
-    //     createdAt: {
-    //       gte: add(start, { hours: 3 }),
-    //       lte: add(end, { hours: 3 }),
-    //     },
-    //   },
-    //   _sum: {
-    //     litre: true,
-    //     price: true,
-    //   },
-    // });
-
-    const allUsers = await prisma.user.findMany();
-
-    // Map the result to include username from allUsers array
-    const fullInfo = result.map((transaction) => {
-      const user = allUsers.find((user) => user.id === transaction.userId);
-      return {
-        userId: transaction.userId,
-        username: user ? user.username : "Unknown",
-        fullname: user ? user.fullname : "Unknown",
-        phone: user ? user.phone : "UnKnown",
-        litre: Number(transaction.totalLitre),
-        price: transaction.totalPrice,
-        createdAt: transaction.day,
-      };
+      if (!results[userKey]) {
+        results[userKey] = {
+          userId: transaction.userId,
+          username: transaction.user.username,
+          fullname: transaction.user.fullname,
+          phone: transaction.user.phone,
+          litre: 0,
+          price: 0,
+          createdAt: day,
+        };
+      }
+      results[userKey].litre += parseFloat(transaction.litre);
+      results[userKey].price += transaction.price;
     });
+
+    // Convert results object to array
+    const fullInfo = Object.values(results);
+
+    // Calculate total litres and price
+    const totalLitre = transactions.reduce(
+      (sum, cur) => sum + parseFloat(cur.litre),
+      0
+    );
+    const totalPrice = transactions.reduce((sum, cur) => sum + cur.price, 0);
+
+    // Format totals as specified
+    const totals = [{ litre: totalLitre }, { price: totalPrice }];
 
     res.status(200).json({
       message: "success",
       fullInfo,
-      totals: [
-        { litre: Number(totals[0].totalLitre) },
-        { price: totals[0].totalPrice },
-      ],
+      totals,
     });
   } catch (error) {
     res.status(500).json({ message: "Error fetching monthly report", error });
@@ -272,73 +224,70 @@ export const getCustomReport = async (req, res) => {
   try {
     const { startDate, endDate } = req.body;
 
+    // Parse the start and end dates and adjust for time zone if necessary
     const start = new Date(startDate);
     const end = new Date(endDate);
+    end.setHours(23, 59, 59, 999);  // Set to end of the day
 
+    // Retrieve transactions within the date range for users with userType 'user'
     const transactions = await prisma.transaction.findMany({
       where: {
         createdAt: {
           gte: start,
           lte: end,
         },
+        user: {
+          userType: 'user'
+        },
+      },
+      include: {
+        user: true,  // Include user details
       },
     });
 
-    const result = await prisma.$queryRaw`
-      SELECT 
-        userId, 
-        DATE(createdAt) as day, 
-        SUM(litre) as totalLitre, 
-        SUM(price) as totalPrice 
-      FROM transaction 
-      WHERE createdAt BETWEEN ${add(start, { hours: 3 })} AND ${add(end, {
-      hours: 3,
-    })}
-        AND userId IN (SELECT id FROM user WHERE userType = 'user')
-      GROUP BY userId, DATE(createdAt)
-      ORDER BY DATE(createdAt)
-    `;
+    // Group and sum transactions by day and userId
+    const groupedResults = transactions.reduce((acc, cur) => {
+      const day = cur.createdAt.toISOString().split('T')[0];
+      const userKey = `${cur.userId}-${day}`;
 
-    // Calculate total price and litre for all users
-    const totals = await prisma.$queryRaw`
-      SELECT 
-        SUM(litre) as totalLitre, 
-        SUM(price) as totalPrice 
-      FROM transaction 
-      WHERE createdAt BETWEEN ${add(start, { hours: 3 })} AND ${add(end, {
-      hours: 3,
-    })}
-        AND userId IN (SELECT id FROM user WHERE userType = 'user')
-    `;
+      if (!acc[userKey]) {
+        acc[userKey] = {
+          userId: cur.userId,
+          username: cur.user.username,
+          fullname: cur.user.fullname,
+          phone: cur.user.phone,
+          litre: 0,
+          price: 0,
+          createdAt: day,
+        };
+      }
+      acc[userKey].litre += parseFloat(cur.litre);
+      acc[userKey].price += cur.price;
+      return acc;
+    }, {});
 
-    const allUsers = await prisma.user.findMany();
+    const fullInfo = Object.values(groupedResults);
 
-    // Map the result to include username from allUsers array
-    const fullInfo = result.map((transaction) => {
-      const user = allUsers.find((user) => user.id === transaction.userId);
-      return {
-        userId: transaction.userId,
-        username: user ? user.username : "Unknown",
-        fullname: user ? user.fullname : "Unknown",
-        phone: user ? user.phone : "UnKnown",
-        litre: Number(transaction.totalLitre),
-        price: transaction.totalPrice,
-        createdAt: transaction.day,
-      };
-    });
+    // Compute overall totals
+    const totalLitre = transactions.reduce((sum, cur) => sum + parseFloat(cur.litre), 0);
+    const totalPrice = transactions.reduce((sum, cur) => sum + cur.price, 0);
+
+    // Prepare the response
+    const totals = [
+      { litre: totalLitre },
+      { price: totalPrice }
+    ];
 
     res.status(200).json({
       success: "true",
       fullInfo,
-      totals: [
-        { litre: Number(totals[0].totalLitre) },
-        { price: totals[0].totalPrice },
-      ],
+      totals
     });
   } catch (error) {
     res.status(500).json({ message: "Error fetching custom report", error });
   }
 };
+
 
 export const getUserTransactionReport = async (req, res) => {
   try {

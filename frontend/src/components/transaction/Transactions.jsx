@@ -1,7 +1,7 @@
 "use client";
 import { Fragment, useState, useEffect } from "react";
-import DataTable from "./transaction/Data-Table";
-import { columns } from "./transaction/columns";
+import DataTable from "./Data-Table";
+import { columns } from "./columns";
 import { Listbox, Transition } from "@headlessui/react";
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";

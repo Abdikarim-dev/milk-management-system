@@ -36,7 +36,7 @@ let options = {
     },
     title: {
       display: true,
-      text: "OVERVIEW PERFORMANCE",
+      text: "WEEKLY PERFORMANCE",
       position: "top",
       font: {
         size: 24,

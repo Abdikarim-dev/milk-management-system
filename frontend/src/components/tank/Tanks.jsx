@@ -1,15 +1,10 @@
-"use client";
-import { Fragment, useState, useEffect } from "react";
-import DataTable from "./tank/Data-Table";
-import { columns } from "./tank/columns";
-import {
-  getTanksData,
-  registerTanksApi,
-  updateTanksApi,
-} from "../apicalls/tanks.js";
+import { useState, useEffect } from "react";
+import DataTable from "./Data-Table";
+import { columns } from "./columns";
+import { getTanksData, updateTanksApi } from "@/apicalls/tanks";
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { CheckIcon, ChevronsUpDownIcon, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -18,10 +13,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
 
 function Tanks() {
   const navigate = useNavigate();
@@ -92,7 +83,7 @@ function Tanks() {
 
   const formSchema = z.object({
     quantity: z
-      .string()
+      .string().min(1,{message:"Minimum quantity is 0.5 Ltr"})
       .refine((value) => !isNaN(parseFloat(value)), {
         message: "Must be a number",
       })
@@ -140,6 +131,7 @@ function Tanks() {
           quantity: "", // You can reset to empty or to initial props if needed
           description: "",
         });
+        navigate("/home");
       } else {
         setTimeout(() => {
           console.log(response);
@@ -181,8 +173,8 @@ function Tanks() {
                       placeholder="Enter Amount..."
                     />
                   </FormControl>
-                  {errors.fullname && (
-                    <p className="text-red-600">{errors.quantity.message}</p>
+                  {errors.quantity && (
+                    <p className="text-red-600 pt-2">{errors.quantity.message}</p>
                   )}
                 </FormItem>
                 <FormItem>
@@ -192,7 +184,7 @@ function Tanks() {
                       placeholder="Description..."
                     />
                   </FormControl>
-                  {errors.username && (
+                  {errors.description && (
                     <p className="text-red-600">{errors.description.message}</p>
                   )}
                 </FormItem>

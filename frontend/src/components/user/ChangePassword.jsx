@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormItem } from "./ui/form";
-import { Input } from "./ui/input";
+import { Form, FormControl, FormItem } from "../ui/form";
+import { Input } from "../ui/input";
 import { Button } from "@headlessui/react";
 import { useState } from "react";
 import { changePassword } from "@/apicalls/users";

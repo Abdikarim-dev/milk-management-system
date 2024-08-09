@@ -1,24 +1,33 @@
 import { axiosInistance } from ".";
 
-export const dailyReport = async () => {
+export const dailyReport = async (username) => {
   try {
-    const response = await axiosInistance.get("/api/report/daily");
+    const endpoint = username
+      ? `/api/report/daily/${username}`
+      : "/api/report/daily";
+    const response = await axiosInistance.get(endpoint);
     return response.data;
   } catch (error) {
     return error.response.data;
   }
 };
-export const weeklyReport = async () => {
+export const weeklyReport = async (username) => {
   try {
-    const response = await axiosInistance.get("/api/report/weekly");
+    const endpoint = username
+      ? `/api/report/weekly/${username}`
+      : "/api/report/weekly";
+    const response = await axiosInistance.get(endpoint);
     return response.data;
   } catch (error) {
     return error.response.data;
   }
 };
-export const monthlyReport = async () => {
+export const monthlyReport = async (username) => {
   try {
-    const response = await axiosInistance.get("/api/report/monthly");
+    const endpoint = username
+      ? `/api/report/monthly/${username}`
+      : "/api/report/monthly";
+    const response = await axiosInistance.get(endpoint);
     return response.data;
   } catch (error) {
     return error.response.data;

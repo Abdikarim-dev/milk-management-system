@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/popover";
 import { customReport } from "@/apicalls/reports";
 
-function CustomReport({ setData, setTotal }) {
+function CustomReport({ setData, setTotal, username }) {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
@@ -38,12 +38,13 @@ function CustomReport({ setData, setTotal }) {
     const dataToBeSend = {
       startDate,
       endDate,
+      username,
     };
 
     try {
       const fetchData = async () => {
         const data = await customReport(dataToBeSend);
-        console.log(dataToBeSend)
+        console.log(dataToBeSend);
         setData(data?.fullInfo);
         setTotal(data?.totals);
       };

@@ -1,8 +1,8 @@
 "use client";
 import { Fragment, useState, useEffect } from "react";
-import DataTable from "./user/Data-Table";
-import { columns } from "./user/columns";
-import { getUserData, registerUserApi } from "./../apicalls/users.js";
+import DataTable from "./Data-Table";
+import { columns } from "./columns";
+import { getUserData, registerUserApi } from "@/apicalls/users.js";
 import { Listbox, Transition } from "@headlessui/react";
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";

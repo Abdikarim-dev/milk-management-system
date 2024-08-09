@@ -13,12 +13,7 @@ import { Form, FormControl, FormItem, FormLabel } from "@/components/ui/form";
 
 import { Input } from "@/components/ui/input";
 
-import {
-  checkSession,
-  loginUser,
-  logoutUser,
-} from "@/redux/features/userSlice";
-import axios from "axios";
+import { loginUser } from "@/redux/features/userSlice";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
@@ -82,8 +77,12 @@ function Login() {
         expiresIn: response?.expiresIn,
         token: response?.token,
       };
-
-      await registerActiveUser(user?.username?.id);
+      // const role = user?.username.userType === "admin" ? "admin" : "User";
+      const activeUser = {
+        id: user?.username?.id,
+        role: user?.username.userType === "admin" ? "admin" : "User",
+      };
+      await registerActiveUser(activeUser);
 
       dispatch(loginUser(user));
       navigate("/home");

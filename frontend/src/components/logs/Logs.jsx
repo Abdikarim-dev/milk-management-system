@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
-import DataTable from "./logs/Data-Table";
-import { Reportcolumns } from "./logs/columns";
+import DataTable from "./Data-Table";
+import { Reportcolumns } from "./columns";
 import { daily, getLogs, monthly, weekly } from "@/apicalls/logs";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import { Button } from "./ui/button";
+} from "../ui/dropdown-menu";
+import { Button } from "../ui/button";
 import { ChevronDown } from "lucide-react";
 import { useSelector } from "react-redux";
 

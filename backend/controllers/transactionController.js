@@ -71,6 +71,7 @@ export const getTransactions = async (req, res) => {
     });
   }
 };
+
 export const addTransaction = async (req, res) => {
   try {
     const { userId, litre, price, milkTankId } = req.body;
@@ -105,7 +106,9 @@ export const addTransaction = async (req, res) => {
     const logs = await prisma.logs.create({
       data: {
         type: "Transaction Type",
-        note: `Added Transaction With of (${parseFloat(litre) * 0.001}) Litre. `,
+        note: `Added Transaction With of (${
+          parseFloat(litre) * 0.001
+        }) Litre. `,
         userId: userId,
       },
     });
@@ -473,6 +476,69 @@ export const transactionsByMonthly = async (req, res) => {
       success: true,
       message: groupedData,
     });
+  } catch (error) {
+    res.status(400).send({
+      success: false,
+      message: "An error occured : " + error,
+    });
+  }
+};
+
+export const getWeeklyTransactions = async (req, res) => {
+  try {
+    const last7Days = getLast7DaysWithNames();
+    const transactions = await prisma.transaction.findMany({
+      include: {
+        user: true,
+      },
+      where: {
+        createdAt: {
+          gte: new Date(last7Days[6].date + "T00:00:00.000Z"),
+        },
+      },
+    });
+
+    const result = transactions.reduce((acc, transaction) => {
+      const username = transaction.user.fullname;
+      const id = transaction.user.id;
+      const litre = transaction.litre;
+      const price = transaction.price;
+      const date = transaction.createdAt;
+      if (!acc[username]) {
+        acc[username] = {
+          id,
+          username,
+          litre: 0,
+          price: 0,
+          noOfTransactions: 0,
+          date,
+        };
+      }
+      acc[username].litre += parseFloat(litre);
+      acc[username].price += price;
+      acc[username].noOfTransactions += 1;
+      return acc;
+    }, {});
+
+    res.status(200).send({
+      success: true,
+      message: Object.values(result),
+    });
+  } catch (error) {
+    res.status(400).send({
+      success: false,
+      message: "An error occured : " + error,
+    });
+  }
+};
+export const getMonthlyTransactions = async (req, res) => {
+  try {
+    const allTransactions = await prisma.transaction.findMany({
+      include: {
+        user: true,
+      },
+    });
+    res.status(200).send(allTransactions);
   } catch (error) {
     res.status(400).send({
       success: false,

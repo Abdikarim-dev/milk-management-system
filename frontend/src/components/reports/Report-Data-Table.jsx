@@ -75,10 +75,7 @@ function DataTable({ columns, data, totals }) {
 
   return (
     <div className="rounded-md border">
-      <div className="flex items-center ">
-        {/* INPUT FOR FILTERING */}
-       
-      </div>
+      <div className="flex items-center ">{/* INPUT FOR FILTERING */}</div>
       {/* TABLE */}
       <div>
         <Table>
@@ -128,17 +125,21 @@ function DataTable({ columns, data, totals }) {
                 </TableCell>
               </TableRow>
             )}
-            {/* Add the total row */}
-            <TableRow className="mb-3">
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-              <TableCell className="font-bold text-xl">
-                {Number(totals[0]?.litre * 0.001).toLocaleString() || ''} Ltr
-              </TableCell>
-              <TableCell className="font-bold text-xl">
-                ${totals[1]?.price?.toLocaleString() || ''}
-              </TableCell>
-            </TableRow>
+
+            {table.getRowModel().rows?.length ? (
+              <TableRow className="mb-3">
+                <TableCell></TableCell>
+                <TableCell></TableCell>
+                <TableCell className="font-bold text-xl">
+                  {Number(totals[0]?.litre * 0.001).toLocaleString() || ""} Ltr
+                </TableCell>
+                <TableCell className="font-bold text-xl">
+                  ${totals[1]?.price?.toLocaleString() || ""}
+                </TableCell>
+              </TableRow>
+            ) : (
+              <></>
+            )}
           </TableBody>
         </Table>
       </div>

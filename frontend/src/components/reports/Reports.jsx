@@ -11,19 +11,19 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 
-import DataTable from "./reports/Report-Data-Table";
-import { columns } from "./reports/columns";
-import { fetchUsersSales } from "@/apicalls/transactions";
+import DataTable from "./Report-Data-Table";
+import { columns } from "./columns";
 import { dailyReport, monthlyReport, weeklyReport } from "@/apicalls/reports";
-import UserModal from "./UserModal";
-import CustomReport from "./reports/CustomReport";
+import CustomReport from "./CustomReport";
 import { useReactToPrint } from "react-to-print";
-import Preview from "./reports/Preview";
+import Preview from "./Preview";
+import { useSelector } from "react-redux";
 
 function Reports() {
+  const { user } = useSelector((store) => store.user);
+  const id = user?.userType === 'user' ? user.id : undefined;
   const [isVisible, setIsVisible] = useState(false);
   const componentRef = useRef();
   const pdfRef = useRef();
@@ -43,7 +43,7 @@ function Reports() {
       case 1:
         {
           const fetchData = async () => {
-            const data = await dailyReport();
+            const data = await dailyReport(id);
             setData(data?.fullInfo);
             setTitle(reports[0].type);
             setTotal(data?.totals);
@@ -55,7 +55,7 @@ function Reports() {
       case 2:
         {
           const fetchData = async () => {
-            const data = await weeklyReport();
+            const data = await weeklyReport(id);
             setData(data?.fullInfo);
             setTitle(reports[1].type);
             setTotal(data?.totals);
@@ -67,7 +67,7 @@ function Reports() {
       case 3:
         {
           const fetchData = async () => {
-            const data = await monthlyReport();
+            const data = await monthlyReport(id);
             setData(data?.fullInfo);
             setTitle(reports[2].type);
             setTotal(data?.totals);
@@ -105,7 +105,7 @@ function Reports() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await monthlyReport();
+      const data = await monthlyReport(id);
       setData(data?.fullInfo);
       console.log(data?.totals);
       setTotal(data?.totals);
@@ -114,30 +114,30 @@ function Reports() {
     fetchData();
   }, []);
 
-  const downloadPdf = () => {
-    const input = pdfRef.current;
+  // const downloadPdf = () => {
+  //   const input = pdfRef.current;
 
-    html2canvas(input).then((canvas) => {
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4", true);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-      const imgWidth = canvas.width;
-      const imgHeight = canvas.height;
-      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
-      const imgX = (pdfWidth - imgWidth * ratio) / 2;
-      const imgY = 30;
-      pdf.addImage(
-        imgData,
-        "PNG",
-        imgX,
-        imgY,
-        imgWidth * ratio,
-        imgHeight * ratio
-      );
-      pdf.save("SAMPLE TEMPLATE PDF");
-    });
-  };
+  //   html2canvas(input).then((canvas) => {
+  //     const imgData = canvas.toDataURL("image/png");
+  //     const pdf = new jsPDF("p", "mm", "a4", true);
+  //     const pdfWidth = pdf.internal.pageSize.getWidth();
+  //     const pdfHeight = pdf.internal.pageSize.getHeight();
+  //     const imgWidth = canvas.width;
+  //     const imgHeight = canvas.height;
+  //     const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+  //     const imgX = (pdfWidth - imgWidth * ratio) / 2;
+  //     const imgY = 30;
+  //     pdf.addImage(
+  //       imgData,
+  //       "PNG",
+  //       imgX,
+  //       imgY,
+  //       imgWidth * ratio,
+  //       imgHeight * ratio
+  //     );
+  //     pdf.save("SAMPLE TEMPLATE PDF");
+  //   });
+  // };
   return (
     <section className="py-4 px-10 w-full">
       <div className="flex items-center justify-between pb-4">
@@ -145,6 +145,15 @@ function Reports() {
         <div className="flex items-center">
           <span className="text-3xl font-bold">{title} Report</span>
         </div>
+
+        {custom && (
+          <CustomReport
+            setData={setData}
+            setTotal={setTotal}
+            username={username}
+          />
+        )}
+
         <div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -169,9 +178,10 @@ function Reports() {
               })}
             </DropdownMenuContent>
           </DropdownMenu>
-          {/* <button onClick={() => handlePrint()}>Print</button> */}
+          <Button className="ml-2" onClick={() => handlePrint()}>
+            Print
+          </Button>
         </div>
-        {custom && <CustomReport setData={setData} setTotal={setTotal} />}
       </div>
       {/* TABLE */}
       <div ref={componentRef}>

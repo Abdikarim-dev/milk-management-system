@@ -3,13 +3,13 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import Home from "@/components/dashboard/Home";
 import ProtectedRoute from "./ProtectedRoute";
 import Main from "./dashboard/Main";
-import Users from "./Users";
-import Transactions from "./Transactions";
-import UsersReport from "./UsersReport";
-import UserProfile from "./UserProfile";
-import Tanks from "./Tanks";
-import Reports from "./Reports";
-import Logs from "./Logs";
+import Users from "./user/Users";
+import Transactions from "./transaction/Transactions";
+// import UsersReport from "./UsersReport";
+import UserProfile from "./user/UserProfile";
+import Tanks from "./tank/Tanks";
+import Reports from "./reports/Reports";
+import Logs from "./logs/Logs";
 
 function SidebarRoutes() {
   return (
@@ -50,14 +50,6 @@ function SidebarRoutes() {
           }
         />
 
-        <Route
-          path={"/report"}
-          element={
-            <ProtectedRoute>
-              <UsersReport />
-            </ProtectedRoute>
-          }
-        />
         <Route
           path={"/reports"}
           element={
